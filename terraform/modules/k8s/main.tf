@@ -10,19 +10,26 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   dns_prefix          = var.k8s_dns_prefix
 
   service_principal {
-    client_id     = var.client_id
-    client_secret = var.client_secret
+    client_id     = "f0fe177d-6b31-4474-82ce-f65f9c67d008"
+    client_secret = "9b5c0643-9619-4813-92f2-b162434cb452"
   }
 
   default_node_pool {
     name                  = "default"
     vm_size               = "Standard_D1_v2"
     os_disk_size_gb       = 30
+    availability_zones    = var.k8s_zones
     vnet_subnet_id        = var.vnet_subnet_id
     enable_node_public_ip = true # Nodes need a public IP for external resources. FIXME: Switch to NAT Gateway if its available in our subscription
     enable_auto_scaling   = var.enable_auto_scaling
     max_count             = var.max_count # FIXME: if auto_scaling disabled, set to 0
     min_count             = var.min_count # FIXME: if auto_scaling disabled, set to 0
+  }
+
+  network_profile {
+    load_balancer_sku     = "standard"
+    network_plugin        = var.k8s_network_plugin
+    network_policy        = var.k8s_network_policy
   }
 
   identity {

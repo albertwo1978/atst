@@ -29,6 +29,22 @@ variable "k8s_node_size" {
   default     = "Standard_A1_v2"
 }
 
+variable "k8s_network_plugin" {
+  type    = string
+  default = "azure"
+}
+
+variable "k8s_network_policy" {
+  type    = string
+  default = "azure"
+}
+
+variable "k8s_zones" {
+  description = "Number of Availability Zones for k8s node pool"
+  type    = list(string)
+  default = ["1", "2", "3"]
+}
+
 variable "vnet_subnet_id" {
   description = "Subnet to use for the default k8s pool"
   type        = string

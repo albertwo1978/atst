@@ -9,9 +9,9 @@ provider "azuread" {
 
 terraform {
   backend "azurerm" {
-    resource_group_name  = "cloudzero-jedidev-jedidevtfstate"
-    storage_account_name = "jedidevtfstate"
-    container_name       = "tfstate"
-    key                  = "dev.terraform.tfstate"
+    resource_group_name  = "staging-agce-tfstate"
+    storage_account_name = "stagingagcetfstate"
+    container_name       = "state"
+    key                  = "staging.terraform.tfstate"
   }
 }
