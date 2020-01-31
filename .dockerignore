@@ -21,11 +21,8 @@ LICENSE
 # Skip envrc
 .envrc
 
-# Skip ansible-container stuff
-ansible*
-container.yml
-meta.yml
-requirements.yml
+# Skip terraform
+terraform
 
 # Skip kubernetes and Docker config stuff
 deploy

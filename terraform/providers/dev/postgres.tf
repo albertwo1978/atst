@@ -14,7 +14,8 @@ module "sql" {
   owner                        = var.owner
   environment                  = var.environment
   region                       = var.region
-  subnet_id                    = module.vpc.subnets # FIXME - Should be a map of subnets and specify private
+  subnet_id                    = module.vpc.subnet_list["private"].id
   administrator_login          = data.azurerm_key_vault_secret.postgres_username.value
   administrator_login_password = data.azurerm_key_vault_secret.postgres_password.value
+  workspace_id                 = module.logs.workspace_id
 }

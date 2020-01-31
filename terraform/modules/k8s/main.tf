@@ -46,3 +46,51 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     owner       = var.owner
   }
 }
+
+resource "azurerm_monitor_diagnostic_setting" "k8s_diagnostic-1" {
+  name                       = "${var.name}-${var.environment}-k8s-diag"
+  target_resource_id         = azurerm_kubernetes_cluster.k8s.id
+  log_analytics_workspace_id = var.workspace_id
+  log {
+    category = "kube-apiserver"
+    retention_policy {
+      enabled = true
+    }
+  }
+  log {
+    category = "kube-controller-manager"
+    retention_policy {
+      enabled = true
+    }
+  }
+  log {
+    category = "kube-scheduler"
+    retention_policy {
+      enabled = true
+    }
+  }
+  log {
+    category = "kube-audit"
+    retention_policy {
+      enabled = true
+    }
+  }
+  log {
+    category = "cluster-autoscaler"
+    retention_policy {
+      enabled = true
+    }
+  }
+  metric {
+    category = "AllMetrics"
+    retention_policy {
+      enabled = true
+    }
+  }
+}
+
+resource "azurerm_role_assignment" "k8s_network_contrib" {
+  scope                = var.vnet_id
+  role_definition_name = "Network Contributor"
+  principal_id         = azurerm_kubernetes_cluster.k8s.identity[0].principal_id
+}

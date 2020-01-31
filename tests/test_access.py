@@ -19,9 +19,7 @@ from atst.app import make_config, make_app
 _NO_ACCESS_CHECK_REQUIRED = _NO_LOGIN_REQUIRED + [
     "applications.accept_invitation",  # available to all users; access control is built into invitation logic
     "atst.catch_all",  # available to all users
-    "atst.csp_environment_access",  # internal redirect
     "atst.home",  # available to all users
-    "atst.jedi_csp_calculator",  # internal redirect
     "dev.messages",  # dev tool
     "dev.test_email",  # dev tool
     "portfolios.accept_invitation",  # available to all users; access control is built into invitation logic
@@ -663,7 +661,7 @@ def test_task_orders_new_get_routes(get_url_assert_status):
 def test_task_orders_new_post_routes(post_url_assert_status):
     post_routes = [
         ("task_orders.submit_form_step_one_add_pdf", {"pdf": ""}),
-        ("task_orders.submit_form_step_two_add_number", {"number": "1234567890"}),
+        ("task_orders.submit_form_step_two_add_number", {"number": "1234567890123"}),
         (
             "task_orders.submit_form_step_three_add_clins",
             {

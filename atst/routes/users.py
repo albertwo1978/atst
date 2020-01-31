@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, g, request as http_request, redire
 from atst.forms.edit_user import EditUserForm
 from atst.domain.users import Users
 from atst.utils.flash import formatted_flash as flash
+from atst.routes import match_url_pattern
 
 
 bp = Blueprint("users", __name__)
@@ -35,7 +36,7 @@ def update_user():
     if form.validate():
         Users.update(user, form.data)
         flash("user_updated")
-        if next_url:
+        if match_url_pattern(next_url):
             return redirect(next_url)
 
     return render_template(

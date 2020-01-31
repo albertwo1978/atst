@@ -52,3 +52,8 @@ variable "whitelist" {
   description = "A map of whitelisted IPs and CIDR ranges. For single IPs, Azure expects just the IP, NOT a /32."
   default     = {}
 }
+
+variable "workspace_id" {
+  description = "The Log Analytics Workspace ID"
+  type        = string
+}

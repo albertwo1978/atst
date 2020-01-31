@@ -36,8 +36,32 @@ resource "azurerm_container_registry" "acr" {
     virtual_network = [
       for subnet in var.subnet_ids : {
         action    = "Allow"
-        subnet_id = subnet.value
+        subnet_id = subnet
       }
     ]
+  }
+}
+
+resource "azurerm_monitor_diagnostic_setting" "acr_diagnostic" {
+  name                       = "${var.name}-${var.environment}-acr-diag"
+  target_resource_id         = azurerm_container_registry.acr.id
+  log_analytics_workspace_id = var.workspace_id
+  log {
+    category = "ContainerRegistryRepositoryEvents"
+    retention_policy {
+      enabled = true
+    }
+  }
+  log {
+    category = "ContainerRegistryLoginEvents"
+    retention_policy {
+      enabled = true
+    }
+  }
+  metric {
+    category = "AllMetrics"
+    retention_policy {
+      enabled = true
+    }
   }
 }

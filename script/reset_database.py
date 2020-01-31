@@ -16,7 +16,9 @@ from atst.app import make_config, make_app
 def reset_database():
     conn = db.engine.connect()
 
-    meta = sqlalchemy.MetaData(bind=conn, reflect=True)
+    meta = sqlalchemy.MetaData(bind=conn)
+    meta.reflect()
+
     trans = conn.begin()
 
     # drop all tables

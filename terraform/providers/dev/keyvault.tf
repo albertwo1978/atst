@@ -10,5 +10,6 @@ module "keyvault" {
   policy           = "Deny"
   subnet_ids       = [module.vpc.subnets]
   whitelist        = var.admin_user_whitelist
+  workspace_id     = module.logs.workspace_id
 }
 

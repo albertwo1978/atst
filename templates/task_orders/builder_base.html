@@ -14,10 +14,14 @@
 
       {% call Modal(name='cancel', dismissable=True) %}
         <div class="task-order__modal-cancel">
-          <h1>Do you want to save this draft?</h1>
+          <h1>{{ 'task_orders.form.builder_base.cancel_modal' | translate }}</h1>
           <div class="action-group">
-            <button formaction="{{ cancel_discard_url }}" class="usa-button usa-button-primary" type="submit">No, delete it</button>
-            <button formaction="{{ cancel_save_url }}" class="usa-button usa-button-primary" type="submit">Yes, save for later</button>
+            <button formaction="{{ cancel_discard_url }}" class="usa-button usa-button-primary" type="submit">
+              {{ "task_orders.form.builder_base.delete_draft" | translate }}
+            </button>
+            <button formaction="{{ cancel_save_url }}" class="usa-button usa-button-primary" type="submit">
+              {{ "task_orders.form.builder_base.save_draft" | translate }}
+            </button>
           </div>
         </div>
       {% endcall %}
@@ -39,9 +43,20 @@
           {% endblock %}
 
           {% if step != "1" %}
-            <a class="usa-button usa-button-secondary" href="{{ previous_button_link }}">
-              Previous
-            </a>
+            {% if step == "2" or step == "3" -%}
+              <button
+                type="submit"
+                class="usa-button usa-button-secondary"
+                formaction="{{ previous_button_link }}">
+                {{ "common.previous" | translate }}
+              </button>
+            {% else -%}
+              <a
+                class="usa-button usa-button-secondary"
+                href="{{ previous_button_link }}">
+                {{ "common.previous" | translate }}
+              </a>
+            {%- endif %}
           {% endif %}
 
           <a

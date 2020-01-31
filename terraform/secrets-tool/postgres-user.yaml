@@ -1,0 +1,4 @@
+---
+- PGPASSWORD:
+    type: 'password'
+    length: 30

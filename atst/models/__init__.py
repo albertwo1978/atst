@@ -7,11 +7,7 @@ from .audit_event import AuditEvent
 from .clin import CLIN, JEDICLINType
 from .environment import Environment
 from .environment_role import EnvironmentRole, CSPRole
-from .job_failure import (
-    EnvironmentJobFailure,
-    EnvironmentRoleJobFailure,
-    PortfolioJobFailure,
-)
+from .job_failure import JobFailure
 from .notification_recipient import NotificationRecipient
 from .permissions import Permissions
 from .permission_set import PermissionSet

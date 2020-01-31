@@ -6,7 +6,7 @@
 
 {% set action = url_for("task_orders.submit_form_step_three_add_clins", task_order_id=task_order_id) %}
 {% set next_button_text = "task_orders.form.step_3.next_button" | translate %}
-{% set previous_button_link = url_for("task_orders.form_step_two_add_number", task_order_id=task_order_id) %}
+{% set previous_button_link = url_for("task_orders.submit_form_step_three_add_clins", task_order_id=task_order_id, previous=True) %}
 {% set step = "3" %}
 {% set sticky_cta_text = 'task_orders.form.sticky_header_text' | translate %}
 

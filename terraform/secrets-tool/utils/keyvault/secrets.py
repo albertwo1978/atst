@@ -36,7 +36,7 @@ class SecretsLoader():
     load the secrets in to keyvault
     """
     def __init__(self, yaml_file: str, keyvault: object):
-        assert Path(yaml_file).exists() 
+        assert Path(yaml_file).exists()
         self.yaml_file = yaml_file
         self.keyvault = keyvault
         self.config = dict()
@@ -47,7 +47,7 @@ class SecretsLoader():
     def _load_yaml(self):
         with open(self.yaml_file) as handle:
             self.config = yaml.load(handle, Loader=yaml.FullLoader)
-    
+
     def _generate_secrets(self):
         secrets = GenerateSecrets(self.config).process_definition()
         self.secrets = secrets
@@ -60,12 +60,14 @@ class SecretsLoader():
 
 class GenerateSecrets():
     """
-    Read the secrets definition and generate requiesite 
+    Read the secrets definition and generate requiesite
     secrets based on the type of secret and arguments
     provided
     """
     def __init__(self, definitions: dict):
         self.definitions = definitions
+        most_punctuation = string.punctuation.replace("'", "").replace('"', "")
+        self.password_characters = string.ascii_letters + string.digits + most_punctuation
 
     def process_definition(self):
         """
@@ -101,9 +103,8 @@ class GenerateSecrets():
     # Types. Can be usernames, passwords, or in the future things like salted
     # tokens, uuid, or other specialized types
     def _generate_password(self, length: int):
-        self.password_characters = string.ascii_letters + string.digits + string.punctuation
         return ''.join(secrets.choice(self.password_characters) for i in range(length))
-    
+
     def _generate_username(self, length: int):
         self.username_characters = string.ascii_letters
         return ''.join(secrets.choice(self.username_characters) for i in range(length))

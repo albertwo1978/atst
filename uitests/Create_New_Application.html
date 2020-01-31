@@ -160,7 +160,7 @@ Imported from: AT-AT CI - login-->
 <tr>
 <td>assertText</td>
 <td>css=.sticky-cta-text > h3</td>
-<td>*Create New Portfolio*</td>
+<td>*Name and Describe Portfolio*</td>
 </tr>
 <tr>
 <td>waitForPageToLoad</td>
@@ -413,28 +413,13 @@ Imported from: AT-AT CI - login-->
 </tr>
 <tr>
 <td>waitForElementPresent</td>
-<td>css=.application-perms > div:nth-of-type(3) > .usa-input.input__inline-fields > fieldset.usa-input__choices > legend > label</td>
-<td></td>
-</tr>
-<tr original-target=".application-perms > div:nth-of-type(3) > .usa-input.input__inline-fields > fieldset.usa-input__choices > legend > label,xpath=//label[contains(text(), "Delete Application")]">
-<td>click</td>
-<td>css=.application-perms > div:nth-of-type(3) > .usa-input.input__inline-fields > fieldset.usa-input__choices > legend > label</td>
-<td></td>
-</tr>
-<tr>
-<td>waitForPageToLoad</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>waitForElementPresent</td>
 <td>css=#environment_roles-0-role-None</td>
 <td></td>
 </tr>
 <tr>
 <td>type</td>
 <td>css=#environment_roles-0-role-None</td>
-<td>Basic Access</td>
+<td>ADMIN</td>
 </tr>
 <tr>
 <td>waitForPageToLoad</td>
@@ -449,7 +434,7 @@ Imported from: AT-AT CI - login-->
 <tr>
 <td>type</td>
 <td>css=#environment_roles-1-role-None</td>
-<td>Network Admin</td>
+<td>BILLING_READ</td>
 </tr>
 <tr>
 <td>waitForPageToLoad</td>

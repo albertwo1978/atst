@@ -1,34 +1,48 @@
 from uuid import uuid4
 
-from atst.domain.csp.cloud.exceptions import (
-    BaselineProvisionException,
-    EnvironmentCreationException,
-    GeneralCSPException,
-    UserProvisioningException,
-    UserRemovalException,
-)
-from atst.domain.csp.cloud.models import BillingProfileTenantAccessCSPResult
-
 from .cloud_provider_interface import CloudProviderInterface
 from .exceptions import (
     AuthenticationException,
     AuthorizationException,
+    BaselineProvisionException,
     ConnectionException,
+    EnvironmentCreationException,
+    GeneralCSPException,
     UnknownServerException,
+    UserProvisioningException,
+    UserRemovalException,
 )
 from .models import (
+    AZURE_MGMNT_PATH,
+    AdminRoleDefinitionCSPPayload,
+    AdminRoleDefinitionCSPResult,
+    ApplicationCSPPayload,
+    ApplicationCSPResult,
     BillingInstructionCSPPayload,
     BillingInstructionCSPResult,
     BillingProfileCreationCSPPayload,
     BillingProfileCreationCSPResult,
+    BillingProfileTenantAccessCSPResult,
     BillingProfileVerificationCSPPayload,
     BillingProfileVerificationCSPResult,
+    PrincipalAdminRoleCSPPayload,
+    PrincipalAdminRoleCSPResult,
     TaskOrderBillingCreationCSPPayload,
     TaskOrderBillingCreationCSPResult,
     TaskOrderBillingVerificationCSPPayload,
     TaskOrderBillingVerificationCSPResult,
+    TenantAdminOwnershipCSPPayload,
+    TenantAdminOwnershipCSPResult,
     TenantCSPPayload,
     TenantCSPResult,
+    TenantPrincipalAppCSPPayload,
+    TenantPrincipalAppCSPResult,
+    TenantPrincipalCredentialCSPPayload,
+    TenantPrincipalCredentialCSPResult,
+    TenantPrincipalCSPPayload,
+    TenantPrincipalCSPResult,
+    TenantPrincipalOwnershipCSPPayload,
+    TenantPrincipalOwnershipCSPResult,
 )
 
 
@@ -117,7 +131,7 @@ class MockCloudProvider(CloudProviderInterface):
         payload is an instance of TenantCSPPayload data class
         """
 
-        self._authorize(payload.creds)
+        self._authorize("admin")
 
         self._delay(1, 5)
 
@@ -274,6 +288,70 @@ class MockCloudProvider(CloudProviderInterface):
             }
         )
 
+    def create_tenant_admin_ownership(self, payload: TenantAdminOwnershipCSPPayload):
+        self._maybe_raise(self.NETWORK_FAILURE_PCT, self.NETWORK_EXCEPTION)
+        self._maybe_raise(self.SERVER_FAILURE_PCT, self.SERVER_EXCEPTION)
+        self._maybe_raise(self.UNAUTHORIZED_RATE, self.AUTHORIZATION_EXCEPTION)
+
+        return TenantAdminOwnershipCSPResult(**dict(id="admin_owner_assignment_id"))
+
+    def create_tenant_principal_ownership(
+        self, payload: TenantPrincipalOwnershipCSPPayload
+    ):
+        self._maybe_raise(self.NETWORK_FAILURE_PCT, self.NETWORK_EXCEPTION)
+        self._maybe_raise(self.SERVER_FAILURE_PCT, self.SERVER_EXCEPTION)
+        self._maybe_raise(self.UNAUTHORIZED_RATE, self.AUTHORIZATION_EXCEPTION)
+
+        return TenantPrincipalOwnershipCSPResult(
+            **dict(id="principal_owner_assignment_id")
+        )
+
+    def create_tenant_principal_app(self, payload: TenantPrincipalAppCSPPayload):
+        self._maybe_raise(self.NETWORK_FAILURE_PCT, self.NETWORK_EXCEPTION)
+        self._maybe_raise(self.SERVER_FAILURE_PCT, self.SERVER_EXCEPTION)
+        self._maybe_raise(self.UNAUTHORIZED_RATE, self.AUTHORIZATION_EXCEPTION)
+
+        return TenantPrincipalAppCSPResult(
+            **dict(appId="principal_app_id", id="principal_app_object_id")
+        )
+
+    def create_tenant_principal(self, payload: TenantPrincipalCSPPayload):
+        self._maybe_raise(self.NETWORK_FAILURE_PCT, self.NETWORK_EXCEPTION)
+        self._maybe_raise(self.SERVER_FAILURE_PCT, self.SERVER_EXCEPTION)
+        self._maybe_raise(self.UNAUTHORIZED_RATE, self.AUTHORIZATION_EXCEPTION)
+
+        return TenantPrincipalCSPResult(**dict(id="principal_id"))
+
+    def create_tenant_principal_credential(
+        self, payload: TenantPrincipalCredentialCSPPayload
+    ):
+        self._maybe_raise(self.NETWORK_FAILURE_PCT, self.NETWORK_EXCEPTION)
+        self._maybe_raise(self.SERVER_FAILURE_PCT, self.SERVER_EXCEPTION)
+        self._maybe_raise(self.UNAUTHORIZED_RATE, self.AUTHORIZATION_EXCEPTION)
+
+        return TenantPrincipalCredentialCSPResult(
+            **dict(
+                principal_client_id="principal_client_id",
+                principal_creds_established=True,
+            )
+        )
+
+    def create_admin_role_definition(self, payload: AdminRoleDefinitionCSPPayload):
+        self._maybe_raise(self.NETWORK_FAILURE_PCT, self.NETWORK_EXCEPTION)
+        self._maybe_raise(self.SERVER_FAILURE_PCT, self.SERVER_EXCEPTION)
+        self._maybe_raise(self.UNAUTHORIZED_RATE, self.AUTHORIZATION_EXCEPTION)
+
+        return AdminRoleDefinitionCSPResult(
+            **dict(admin_role_def_id="admin_role_def_id")
+        )
+
+    def create_principal_admin_role(self, payload: PrincipalAdminRoleCSPPayload):
+        self._maybe_raise(self.NETWORK_FAILURE_PCT, self.NETWORK_EXCEPTION)
+        self._maybe_raise(self.SERVER_FAILURE_PCT, self.SERVER_EXCEPTION)
+        self._maybe_raise(self.UNAUTHORIZED_RATE, self.AUTHORIZATION_EXCEPTION)
+
+        return PrincipalAdminRoleCSPResult(**dict(id="principal_assignment_id"))
+
     def create_or_update_user(self, auth_credentials, user_info, csp_role_id):
         self._authorize(auth_credentials)
 
@@ -340,3 +418,16 @@ class MockCloudProvider(CloudProviderInterface):
         self._delay(1, 5)
         if self._with_authorization and credentials != self._auth_credentials:
             raise self.AUTHENTICATION_EXCEPTION
+
+    def create_application(self, payload: ApplicationCSPPayload):
+        self._maybe_raise(self.UNAUTHORIZED_RATE, GeneralCSPException)
+
+        return ApplicationCSPResult(
+            id=f"{AZURE_MGMNT_PATH}{payload.management_group_name}"
+        )
+
+    def get_credentials(self, scope="portfolio", tenant_id=None):
+        return self.root_creds()
+
+    def update_tenant_creds(self, tenant_id, secret):
+        return secret

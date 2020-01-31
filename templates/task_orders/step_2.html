@@ -4,8 +4,8 @@
 {% from "task_orders/form_header.html" import TOFormStepHeader %}
 
 {% set action = url_for("task_orders.submit_form_step_two_add_number", task_order_id=task_order_id) %}
-{% set next_button_text = "Next: Add Base CLIN" %}
-{% set previous_button_link = url_for("task_orders.form_step_one_add_pdf", task_order_id=task_order_id) %}
+{% set next_button_text = "task_orders.form.step_2.next_button" | translate %}
+{% set previous_button_link = url_for("task_orders.submit_form_step_two_add_number", task_order_id=task_order_id, previous=True) %}
 {% set step = "2" %}
 {% set sticky_cta_text = 'task_orders.form.sticky_header_text' | translate %}
 

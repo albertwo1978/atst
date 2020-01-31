@@ -106,9 +106,9 @@ export default {
   },
   taskOrderNumber: {
     mask: false,
-    match: /^.{13}$/,
-    unmask: [],
-    validationError: 'TO number must be 13 digits',
+    match: /(^[0-9a-zA-Z]{13,17}$)/,
+    unmask: ['-'],
+    validationError: 'TO number must be between 13 and 17 characters',
   },
   usPhone: {
     mask: [

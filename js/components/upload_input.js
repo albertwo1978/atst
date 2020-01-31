@@ -20,6 +20,9 @@ export default {
     portfolioId: {
       type: String,
     },
+    sizeLimit: {
+      type: String,
+    },
   },
 
   data: function() {
@@ -31,6 +34,7 @@ export default {
       sizeError: false,
       filenameError: false,
       downloadLink: '',
+      fileSizeLimit: parseInt(this.sizeLimit),
     }
   },
 
@@ -48,7 +52,7 @@ export default {
       this.clearErrors()
 
       const file = e.target.files[0]
-      if (file.size > 64000000) {
+      if (file.size > this.fileSizeLimit) {
         this.sizeError = true
         return
       }

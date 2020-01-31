@@ -24,6 +24,7 @@ def render_task_orders_edit(
 
     render_args["contract_start"] = app.config.get("CONTRACT_START_DATE")
     render_args["contract_end"] = app.config.get("CONTRACT_END_DATE")
+    render_args["file_size_limit"] = int(app.config.get("FILE_SIZE_LIMIT"))
 
     if task_order_id:
         task_order = TaskOrders.get(task_order_id)
@@ -70,7 +71,12 @@ def update_task_order(form, portfolio_id=None, task_order_id=None, flash_invalid
 
 
 def update_and_render_next(
-    form_data, next_page, current_template, portfolio_id=None, task_order_id=None
+    form_data,
+    next_page,
+    current_template,
+    portfolio_id=None,
+    task_order_id=None,
+    previous=False,
 ):
     form = None
     if task_order_id:
@@ -80,8 +86,9 @@ def update_and_render_next(
         form = TaskOrderForm(form_data)
 
     task_order = update_task_order(form, portfolio_id, task_order_id)
-    if task_order:
-        return redirect(url_for(next_page, task_order_id=task_order.id))
+    if task_order or previous:
+        to_id = task_order.id if task_order else task_order_id
+        return redirect(url_for(next_page, task_order_id=to_id))
     else:
         return (
             render_task_orders_edit(
@@ -210,12 +217,21 @@ def form_step_two_add_number(task_order_id):
 @task_orders_bp.route("/task_orders/<task_order_id>/form/step_2", methods=["POST"])
 @user_can(Permissions.CREATE_TASK_ORDER, message="update task order form")
 def submit_form_step_two_add_number(task_order_id):
+    previous = http_request.args.get("previous", "False").lower() == "true"
     form_data = {**http_request.form}
-    next_page = "task_orders.form_step_three_add_clins"
+    next_page = (
+        "task_orders.form_step_three_add_clins"
+        if not previous
+        else "task_orders.form_step_one_add_pdf"
+    )
     current_template = "task_orders/step_2.html"
 
     return update_and_render_next(
-        form_data, next_page, current_template, task_order_id=task_order_id
+        form_data,
+        next_page,
+        current_template,
+        task_order_id=task_order_id,
+        previous=previous,
     )
 
 
@@ -230,12 +246,21 @@ def form_step_three_add_clins(task_order_id):
 @task_orders_bp.route("/task_orders/<task_order_id>/form/step_3", methods=["POST"])
 @user_can(Permissions.CREATE_TASK_ORDER, message="update task order form")
 def submit_form_step_three_add_clins(task_order_id):
+    previous = http_request.args.get("previous", "False").lower() == "true"
     form_data = {**http_request.form}
-    next_page = "task_orders.form_step_four_review"
+    next_page = (
+        "task_orders.form_step_four_review"
+        if not previous
+        else "task_orders.form_step_two_add_number"
+    )
     current_template = "task_orders/step_3.html"
 
     return update_and_render_next(
-        form_data, next_page, current_template, task_order_id=task_order_id
+        form_data,
+        next_page,
+        current_template,
+        task_order_id=task_order_id,
+        previous=previous,
     )
 
 

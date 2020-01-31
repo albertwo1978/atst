@@ -30,3 +30,11 @@ resource "azurerm_storage_container" "bucket" {
   storage_account_name  = azurerm_storage_account.bucket.name
   container_access_type = var.container_access_type
 }
+
+# Added until requisite TF bugs are fixed. Typically this would be configured in the 
+# storage_account resource
+resource "null_resource" "retention" {
+  provisioner "local-exec" {
+    command = "az storage logging update --account-name ${azurerm_storage_account.bucket.name} --log rwd --services bqt --retention 90"
+  }
+}

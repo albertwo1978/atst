@@ -7,6 +7,7 @@ import datetime
 
 from atst.forms import data
 from atst.models import *
+from atst.models.mixins.state_machines import FSMStates
 
 from atst.domain.invitations import PortfolioInvitations
 from atst.domain.permission_sets import PermissionSets
@@ -121,6 +122,7 @@ class PortfolioFactory(Base):
         owner = kwargs.pop("owner", UserFactory.create())
         members = kwargs.pop("members", [])
         with_task_orders = kwargs.pop("task_orders", [])
+        state = kwargs.pop("state", None)
 
         portfolio = super()._create(model_class, *args, **kwargs)
 
@@ -160,6 +162,12 @@ class PortfolioFactory(Base):
                 status=PortfolioRoleStatus.ACTIVE,
                 permission_sets=perms_set,
             )
+
+        if state:
+            state = getattr(FSMStates, state)
+            fsm = PortfolioStateMachineFactory.create(state=state, portfolio=portfolio)
+            # setting it in the factory is not working for some reason
+            fsm.state = state
 
         portfolio.applications = applications
         portfolio.task_orders = task_orders

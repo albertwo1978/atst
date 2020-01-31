@@ -1,6 +1,6 @@
 {% from "components/icon.html" import Icon %}
 
-{% macro UploadInput(field, portfolio_id, show_label=False) -%}
+{% macro UploadInput(field, portfolio_id, file_size_limit, show_label=False) -%}
 <uploadinput
   inline-template
   {% if not field.errors %}
@@ -11,6 +11,7 @@
   {% endif %}
   v-bind:portfolio-id="'{{ portfolio_id }}'"
   name='{{ field.name }}'
+  v-bind:size-limit='{{ file_size_limit }}'
   >
   <div>
     <div v-show="valid" class="uploaded-file">
@@ -23,7 +24,11 @@
         {{ field.label }}
       {% endif %}
       <p>
-        {{ field.description }}
+        <!-- TODO: fix this to use field.description -->
+        <!-- This was temporarily hard coded because we were unable to use
+        app.config['FILE_SIZE_LIMIT'] in TaskOrderForm field descriptions and labels -->
+        {% set size_limit = file_size_limit // 1000000 %}
+        {{ "task_orders.form.supporting_docs_size_limit" | translate({ "file_size_limit": size_limit }) }}
       </p>
       <div v-if="!hideInput" class="upload-widget">
         <label class="upload-label" :for="name">
@@ -47,7 +52,7 @@
         <span class="usa-input__message">{{ "forms.task_order.upload_error" | translate }}</span>
       </template>
       <template v-if="sizeError">
-        <span class="usa-input__message">{{ "forms.task_order.size_error" | translate }}</span>
+        <span class="usa-input__message">{{ "forms.task_order.size_error" | translate({"file_size_limit": (file_size_limit//1000000)}) }}</span>
       </template>
       <template v-if="filenameError">
         <span class="usa-input__message">{{ "forms.task_order.filename_error" | translate }}</span>

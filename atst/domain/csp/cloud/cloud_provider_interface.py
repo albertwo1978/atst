@@ -1,9 +1,5 @@
 from typing import Dict
 
-from atst.models.user import User
-from atst.models.environment import Environment
-from atst.models.environment_role import EnvironmentRole
-
 
 class CloudProviderInterface:
     def set_secret(self, secret_key: str, secret_value: str):
@@ -15,9 +11,7 @@ class CloudProviderInterface:
     def root_creds(self) -> Dict:
         raise NotImplementedError()
 
-    def create_environment(
-        self, auth_credentials: Dict, user: User, environment: Environment
-    ) -> str:
+    def create_environment(self, auth_credentials: Dict, user, environment) -> str:
         """Create a new environment in the CSP.
 
         Arguments:
@@ -65,7 +59,7 @@ class CloudProviderInterface:
         raise NotImplementedError()
 
     def create_or_update_user(
-        self, auth_credentials: Dict, user_info: EnvironmentRole, csp_role_id: str
+        self, auth_credentials: Dict, user_info, csp_role_id: str
     ) -> str:
         """Creates a user or updates an existing user's role.
 

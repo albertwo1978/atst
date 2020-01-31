@@ -71,7 +71,7 @@ def test_update_adds_clins():
 
 def test_update_does_not_duplicate_clins():
     task_order = TaskOrderFactory.create(
-        number="3453453456", create_clins=[{"number": "123"}, {"number": "456"}]
+        number="3453453456123", create_clins=[{"number": "123"}, {"number": "456"}]
     )
     clins = [
         {
@@ -93,7 +93,7 @@ def test_update_does_not_duplicate_clins():
     ]
     task_order = TaskOrders.update(
         task_order_id=task_order.id,
-        number="0000000000",
+        number="0000000000000",
         clins=clins,
         pdf={"filename": "sample.pdf", "object_name": "1234567"},
     )
@@ -170,3 +170,11 @@ def test_update_enforces_unique_number():
     dupe_task_order = TaskOrderFactory.create()
     with pytest.raises(AlreadyExistsError):
         TaskOrders.update(dupe_task_order.id, task_order.number, [], None)
+
+
+def test_allows_alphanumeric_number():
+    portfolio = PortfolioFactory.create()
+    valid_to_numbers = ["1234567890123", "ABC1234567890"]
+
+    for number in valid_to_numbers:
+        assert TaskOrders.create(portfolio.id, number, [], None)

@@ -30,8 +30,6 @@ class Environment(
 
     claimed_until = Column(TIMESTAMP(timezone=True))
 
-    job_failures = relationship("EnvironmentJobFailure")
-
     roles = relationship(
         "EnvironmentRole",
         back_populates="environment",

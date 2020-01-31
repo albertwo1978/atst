@@ -1,5 +1,9 @@
-from . import BaseDomainClass
 from flask import g
+from sqlalchemy import func, or_
+from typing import List
+from uuid import UUID
+
+from . import BaseDomainClass
 from atst.database import db
 from atst.domain.application_roles import ApplicationRoles
 from atst.domain.environments import Environments
@@ -10,7 +14,10 @@ from atst.models import (
     ApplicationRole,
     ApplicationRoleStatus,
     EnvironmentRole,
+    Portfolio,
+    PortfolioStateMachine,
 )
+from atst.models.mixins.state_machines import FSMStates
 from atst.utils import first_or_none, commit_or_raise_already_exists_error
 
 
@@ -118,3 +125,21 @@ class Applications(BaseDomainClass):
         db.session.commit()
 
         return invitation
+
+    @classmethod
+    def get_applications_pending_creation(cls) -> List[UUID]:
+        results = (
+            db.session.query(Application.id)
+            .join(Portfolio)
+            .join(PortfolioStateMachine)
+            .filter(PortfolioStateMachine.state == FSMStates.COMPLETED)
+            .filter(Application.deleted == False)
+            .filter(Application.cloud_id.is_(None))
+            .filter(
+                or_(
+                    Application.claimed_until.is_(None),
+                    Application.claimed_until <= func.now(),
+                )
+            )
+        ).all()
+        return [id_ for id_, in results]

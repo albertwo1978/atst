@@ -1,7 +1,7 @@
 import pytest
 
 from bs4 import BeautifulSoup
-from flask import Markup
+from flask import Markup, current_app as app
 from wtforms import Form, FormField
 from wtforms.fields import StringField
 from wtforms.validators import InputRequired
@@ -35,6 +35,7 @@ class TaskOrderPdfForm(Form):
 
 class TaskOrderForm(Form):
     pdf = FormField(TaskOrderPdfForm, label="task_order_pdf")
+    number = StringField(label="task_order_number", default="number")
 
 
 @pytest.fixture
@@ -61,6 +62,12 @@ def checkbox_input_macro(env):
 def multi_checkbox_input_macro(env):
     multi_checkbox_template = env.get_template("components/multi_checkbox_input.html")
     return getattr(multi_checkbox_template.module, "MultiCheckboxInput")
+
+
+@pytest.fixture
+def text_input_macro(env):
+    text_input_template = env.get_template("components/text_input.html")
+    return getattr(text_input_template.module, "TextInput")
 
 
 @pytest.fixture
@@ -104,13 +111,17 @@ def test_make_multi_checkbox_input_template(
 
 
 def test_make_upload_input_template(upload_input_macro, task_order_form):
-    rendered_upload_macro = upload_input_macro(task_order_form.pdf)
+    rendered_upload_macro = upload_input_macro(
+        task_order_form.pdf, file_size_limit=int(app.config.get("FILE_SIZE_LIMIT")),
+    )
     write_template(rendered_upload_macro, "upload_input_template.html")
 
 
 def test_make_upload_input_error_template(upload_input_macro, task_order_form):
     task_order_form.validate()
-    rendered_upload_macro = upload_input_macro(task_order_form.pdf)
+    rendered_upload_macro = upload_input_macro(
+        task_order_form.pdf, file_size_limit=int(app.config.get("FILE_SIZE_LIMIT")),
+    )
     write_template(rendered_upload_macro, "upload_input_error_template.html")
 
 
@@ -170,3 +181,10 @@ def test_make_pop_date_range(env, app):
         index=1,
     )
     write_template(pop_date_range, "pop_date_range.html")
+
+
+def test_make_text_input_template(text_input_macro, task_order_form):
+    text_input_to_number = text_input_macro(
+        task_order_form.number, validation="taskOrderNumber"
+    )
+    write_template(text_input_to_number, "text_input_to_number.html")

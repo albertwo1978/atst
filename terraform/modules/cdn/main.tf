@@ -29,3 +29,15 @@ resource "azurerm_cdn_endpoint" "cdn" {
     host_name = var.origin_host_name
   }
 }
+
+resource "azurerm_monitor_diagnostic_setting" "acr_diagnostic" {
+  name                       = "${var.name}-${var.environment}-acr-diag"
+  target_resource_id         = azurerm_cdn_endpoint.cdn.id
+  log_analytics_workspace_id = var.workspace_id
+  log {
+    category = "CoreAnalytics"
+    retention_policy {
+      enabled = true
+    }
+  }
+}

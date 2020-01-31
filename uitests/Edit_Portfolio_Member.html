@@ -16,7 +16,7 @@
 <meta name="ghost-inspector-screenshotTarget" content="" />
 <meta name="ghost-inspector-screenshotExclusions" content="div.global-navigation, time" />
 <meta name="ghost-inspector-screenshotCompareEnabled" content="true" />
-<meta name="ghost-inspector-screenshotCompareThreshold" content="0.02" />
+<meta name="ghost-inspector-screenshotCompareThreshold" content="0.03" />
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
@@ -174,7 +174,7 @@ Imported from: AT-AT CI - New Portfolio-->
 <tr>
 <td>assertText</td>
 <td>css=.sticky-cta-text > h3</td>
-<td>*Create New Portfolio*</td>
+<td>*Name and Describe Portfolio*</td>
 </tr>
 <tr>
 <td>waitForPageToLoad</td>
@@ -192,7 +192,7 @@ Imported from: AT-AT CI - New Portfolio-->
 <tr>
 <td>type</td>
 <td>css=#name</td>
-<td>Tatooine Energy Maintenance Systems</td>
+<td>Tatooine Energy Maintenance Systems ${alphanumeric}</td>
 </tr>
 <tr>
 <td>waitForPageToLoad</td>
@@ -291,29 +291,12 @@ Imported from: AT-AT CI - Portfolio Settings-->
 Imported from: AT-AT CI - Portfolio Settings-->
 <tr>
 <td>waitForElementPresent</td>
-<td>css=.panel__content > p:nth-of-type(2)</td>
+<td>css=th.table-cell--third</td>
 <td></td>
 </tr>
 <tr>
 <td>assertElementPresent</td>
-<td>css=.panel__content > p:nth-of-type(2)</td>
-<td></td>
-</tr>
-<tr>
-<td>waitForPageToLoad</td>
-<td></td>
-<td></td>
-</tr>
-<!--Imported from: AT-AT CI - New Portfolio Member
-Imported from: AT-AT CI - Portfolio Settings-->
-<tr>
-<td>waitForElementPresent</td>
-<td>css=td.name</td>
-<td></td>
-</tr>
-<tr>
-<td>assertElementPresent</td>
-<td>css=td.name</td>
+<td>css=th.table-cell--third</td>
 <td></td>
 </tr>
 <tr>
@@ -331,41 +314,7 @@ Imported from: AT-AT CI - Portfolio Settings-->
 <tr>
 <td>assertText</td>
 <td>css=button.usa-button.usa-button-primary.usa-button-big</td>
-<td>Save</td>
-</tr>
-<tr>
-<td>waitForPageToLoad</td>
-<td></td>
-<td></td>
-</tr>
-<!--Imported from: AT-AT CI - New Portfolio Member
-Imported from: AT-AT CI - Portfolio Settings-->
-<tr>
-<td>waitForElementPresent</td>
-<td>css=button.usa-button.usa-button-primary</td>
-<td></td>
-</tr>
-<tr>
-<td>assertText</td>
-<td>css=button.usa-button.usa-button-primary</td>
-<td>*Update*</td>
-</tr>
-<tr>
-<td>waitForPageToLoad</td>
-<td></td>
-<td></td>
-</tr>
-<!--Imported from: AT-AT CI - New Portfolio Member
-Imported from: AT-AT CI - Portfolio Settings-->
-<tr>
-<td>waitForElementPresent</td>
-<td>css=input.usa-button.usa-button-primary</td>
-<td></td>
-</tr>
-<tr>
-<td>assertText</td>
-<td>css=input.usa-button.usa-button-primary</td>
-<td>Save</td>
+<td>Save Changes</td>
 </tr>
 <tr>
 <td>waitForPageToLoad</td>
@@ -375,12 +324,12 @@ Imported from: AT-AT CI - Portfolio Settings-->
 <!--Imported from: AT-AT CI - New Portfolio Member-->
 <tr>
 <td>waitForElementPresent</td>
-<td>css=a.icon-link.modal-link</td>
+<td>css=a.usa-button.usa-button-secondary.add-new-button</td>
 <td></td>
 </tr>
 <tr>
 <td>click</td>
-<td>css=a.icon-link.modal-link</td>
+<td>css=a.usa-button.usa-button-secondary.add-new-button</td>
 <td></td>
 </tr>
 <tr>
@@ -391,13 +340,13 @@ Imported from: AT-AT CI - Portfolio Settings-->
 <!--Imported from: AT-AT CI - New Portfolio Member-->
 <tr>
 <td>waitForElementPresent</td>
-<td>css=#add-port-mem > div > div:nth-of-type(1) > h1</td>
+<td>css=#add-portfolio-manager > div > div > div.member-form > h2</td>
 <td></td>
 </tr>
 <tr>
 <td>assertText</td>
-<td>css=#add-port-mem > div > div:nth-of-type(1) > h1</td>
-<td>*Invite new portfolio member*</td>
+<td>css=#add-portfolio-manager > div > div > div.member-form > h2</td>
+<td>*Add Manager*</td>
 </tr>
 <tr>
 <td>waitForPageToLoad</td>
@@ -487,13 +436,13 @@ Imported from: AT-AT CI - Portfolio Settings-->
 <!--Imported from: AT-AT CI - New Portfolio Member-->
 <tr>
 <td>waitForElementPresent</td>
-<td>css=#add-port-mem > div > div:nth-of-type(2) > h1</td>
+<td>css=#add-portfolio-manager > div > div > div.member-form > h2</td>
 <td></td>
 </tr>
 <tr>
 <td>assertText</td>
-<td>css=#add-port-mem > div > div:nth-of-type(2) > h1</td>
-<td>*Assign member permissions*</td>
+<td>css=#add-portfolio-manager > div > div > div.member-form > h2</td>
+<td>*Set Portfolio Permissions*</td>
 </tr>
 <tr>
 <td>waitForPageToLoad</td>
@@ -503,12 +452,12 @@ Imported from: AT-AT CI - Portfolio Settings-->
 <!--Imported from: AT-AT CI - New Portfolio Member-->
 <tr>
 <td>waitForElementPresent</td>
-<td>css=#permission_sets-perms_app_mgmt</td>
+<td>css=#perms_app_mgmt-None</td>
 <td></td>
 </tr>
 <tr>
 <td>click</td>
-<td>css=#permission_sets-perms_app_mgmt</td>
+<td>css=#perms_app_mgmt-None</td>
 <td></td>
 </tr>
 <tr>
@@ -519,12 +468,12 @@ Imported from: AT-AT CI - Portfolio Settings-->
 <!--Imported from: AT-AT CI - New Portfolio Member-->
 <tr>
 <td>waitForElementPresent</td>
-<td>css=#permission_sets-perms_app_mgmt > option:nth-of-type(1)</td>
+<td>css=#perms_funding-None</td>
 <td></td>
 </tr>
 <tr>
 <td>click</td>
-<td>css=#permission_sets-perms_app_mgmt > option:nth-of-type(1)</td>
+<td>css=#perms_funding-None</td>
 <td></td>
 </tr>
 <tr>
@@ -535,12 +484,12 @@ Imported from: AT-AT CI - Portfolio Settings-->
 <!--Imported from: AT-AT CI - New Portfolio Member-->
 <tr>
 <td>waitForElementPresent</td>
-<td>css=#permission_sets-perms_funding</td>
+<td>css=#perms_reporting-None</td>
 <td></td>
 </tr>
 <tr>
 <td>click</td>
-<td>css=#permission_sets-perms_funding</td>
+<td>css=#perms_reporting-None</td>
 <td></td>
 </tr>
 <tr>
@@ -551,60 +500,12 @@ Imported from: AT-AT CI - Portfolio Settings-->
 <!--Imported from: AT-AT CI - New Portfolio Member-->
 <tr>
 <td>waitForElementPresent</td>
-<td>css=#permission_sets-perms_funding > option:nth-of-type(1)</td>
-<td></td>
-</tr>
-<tr>
-<td>click</td>
-<td>css=#permission_sets-perms_funding > option:nth-of-type(1)</td>
-<td></td>
-</tr>
-<tr>
-<td>waitForPageToLoad</td>
-<td></td>
-<td></td>
-</tr>
-<!--Imported from: AT-AT CI - New Portfolio Member-->
-<tr>
-<td>waitForElementPresent</td>
-<td>css=#permission_sets-perms_reporting</td>
-<td></td>
-</tr>
-<tr>
-<td>click</td>
-<td>css=#permission_sets-perms_reporting</td>
-<td></td>
-</tr>
-<tr>
-<td>waitForPageToLoad</td>
-<td></td>
-<td></td>
-</tr>
-<!--Imported from: AT-AT CI - New Portfolio Member-->
-<tr>
-<td>waitForElementPresent</td>
-<td>css=#permission_sets-perms_reporting > option:nth-of-type(1)</td>
-<td></td>
-</tr>
-<tr>
-<td>click</td>
-<td>css=#permission_sets-perms_reporting > option:nth-of-type(1)</td>
-<td></td>
-</tr>
-<tr>
-<td>waitForPageToLoad</td>
-<td></td>
-<td></td>
-</tr>
-<!--Imported from: AT-AT CI - New Portfolio Member-->
-<tr>
-<td>waitForElementPresent</td>
-<td>css=#permission_sets-perms_portfolio_mgmt</td>
+<td>css=#perms_portfolio_mgmt-None</td>
 <td></td>
 </tr>
 <tr>
 <td>type</td>
-<td>css=#permission_sets-perms_portfolio_mgmt</td>
+<td>css=#perms_portfolio_mgmt-None</td>
 <td>edit_portfolio_admin</td>
 </tr>
 <tr>
@@ -615,22 +516,6 @@ Imported from: AT-AT CI - Portfolio Settings-->
 <!--Imported from: AT-AT CI - New Portfolio Member-->
 <tr>
 <td>waitForElementPresent</td>
-<td>css=#permission_sets-perms_portfolio_mgmt > option:nth-of-type(2)</td>
-<td></td>
-</tr>
-<tr>
-<td>click</td>
-<td>css=#permission_sets-perms_portfolio_mgmt > option:nth-of-type(2)</td>
-<td></td>
-</tr>
-<tr>
-<td>waitForPageToLoad</td>
-<td></td>
-<td></td>
-</tr>
-<!--Imported from: AT-AT CI - New Portfolio Member-->
-<tr>
-<td>waitForElementPresent</td>
 <td>css=input[type="submit"].action-group__action</td>
 <td></td>
 </tr>
@@ -647,12 +532,75 @@ Imported from: AT-AT CI - Portfolio Settings-->
 <!--Imported from: AT-AT CI - New Portfolio Member-->
 <tr>
 <td>waitForElementPresent</td>
-<td>css=table.atat-table > tbody > tr:nth-of-type(2) > td.name</td>
+<td>css=table.atat-table > tbody > tr > td > span.label.label--success.label--below</td>
+<td></td>
+</tr>
+<tr>
+<td>assertText</td>
+<td>css=table.atat-table > tbody > tr > td > span.label.label--success.label--below</td>
+<td>*invite pending*</td>
+</tr>
+<tr>
+<td>waitForPageToLoad</td>
+<td></td>
+<td></td>
+</tr>
+<!--Imported from: AT-AT CI - New Portfolio Member-->
+<tr>
+<td>waitForElementPresent</td>
+<td>css=.usa-alert-body</td>
+<td></td>
+</tr>
+<tr>
+<td>assertText</td>
+<td>css=.usa-alert-body</td>
+<td>*Brandon Buchannan's invitation has been sent
+
+Brandon Buchannan's access to this Portfolio is pending until they sign in for the first time.*</td>
+</tr>
+<tr>
+<td>waitForPageToLoad</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>waitForElementPresent</td>
+<td>css=table.atat-table > tbody > tr:nth-of-type(2) > td.toggle-menu__container > .toggle-menu > .accordion-table__item__toggler > .icon.icon--ellipsis > svg.svg-inline--fa.fa-ellipsis-h.fa-w-16</td>
+<td></td>
+</tr>
+<tr>
+<td>click</td>
+<td>css=table.atat-table > tbody > tr:nth-of-type(2) > td.toggle-menu__container > .toggle-menu > .accordion-table__item__toggler > .icon.icon--ellipsis > svg.svg-inline--fa.fa-ellipsis-h.fa-w-16</td>
+<td></td>
+</tr>
+<tr>
+<td>waitForPageToLoad</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>waitForElementPresent</td>
+<td>css=table.atat-table > tbody > tr:nth-of-type(2) > td.toggle-menu__container > .toggle-menu > .accordion-table__item-toggle-content.toggle-menu__toggle > a:nth-of-type(1)</td>
+<td></td>
+</tr>
+<tr>
+<td>click</td>
+<td>css=table.atat-table > tbody > tr:nth-of-type(2) > td.toggle-menu__container > .toggle-menu > .accordion-table__item-toggle-content.toggle-menu__toggle > a:nth-of-type(1)</td>
+<td></td>
+</tr>
+<tr>
+<td>waitForPageToLoad</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>waitForElementPresent</td>
+<td>css=.portfolio-content > div:nth-of-type(3) > .modal.form-content--app-mem > .modal__container > .modal__dialog > .modal__body > .modal__form--header > h1</td>
 <td></td>
 </tr>
 <tr>
 <td>assertElementPresent</td>
-<td>css=table.atat-table > tbody > tr:nth-of-type(2) > td.name</td>
+<td>css=.portfolio-content > div:nth-of-type(3) > .modal.form-content--app-mem > .modal__container > .modal__dialog > .modal__body > .modal__form--header > h1</td>
 <td></td>
 </tr>
 <tr>
@@ -660,105 +608,59 @@ Imported from: AT-AT CI - Portfolio Settings-->
 <td></td>
 <td></td>
 </tr>
-<!--Imported from: AT-AT CI - New Portfolio Member-->
 <tr>
 <td>waitForElementPresent</td>
-<td>css=.usa-alert-body > p:nth-of-type(2)</td>
+<td>css=.portfolio-perms > div:nth-of-type(2) > .usa-input.input__inline-fields.checked > fieldset.usa-input__choices > legend > label</td>
+<td></td>
+</tr>
+<tr original-target=".portfolio-perms > div:nth-of-type(2) > .usa-input.input__inline-fields.checked > fieldset.usa-input__choices > legend > label,xpath=//label[contains(text(), "Edit Funding")]">
+<td>click</td>
+<td>css=.portfolio-perms > div:nth-of-type(2) > .usa-input.input__inline-fields.checked > fieldset.usa-input__choices > legend > label</td>
+<td></td>
+</tr>
+<tr>
+<td>waitForPageToLoad</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>waitForElementPresent</td>
+<td>css=.portfolio-perms > div:nth-of-type(4) > .usa-input.input__inline-fields > fieldset.usa-input__choices > legend > label</td>
+<td></td>
+</tr>
+<tr original-target=".portfolio-perms > div:nth-of-type(4) > .usa-input.input__inline-fields > fieldset.usa-input__choices > legend > label,xpath=//label[contains(text(), "Edit Portfolio")]">
+<td>click</td>
+<td>css=.portfolio-perms > div:nth-of-type(4) > .usa-input.input__inline-fields > fieldset.usa-input__choices > legend > label</td>
+<td></td>
+</tr>
+<tr>
+<td>waitForPageToLoad</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>waitForElementPresent</td>
+<td>css=.action-group__action.usa-button</td>
+<td></td>
+</tr>
+<tr>
+<td>click</td>
+<td>css=.action-group__action.usa-button</td>
+<td></td>
+</tr>
+<tr>
+<td>waitForPageToLoad</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>waitForElementPresent</td>
+<td>css=h3.usa-alert-heading</td>
 <td></td>
 </tr>
 <tr>
 <td>assertText</td>
-<td>css=.usa-alert-body > p:nth-of-type(2)</td>
-<td>*You have successfully invited Brandon Buchannan to the portfolio.*</td>
-</tr>
-<tr>
-<td>waitForPageToLoad</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>waitForElementPresent</td>
-<td>css=select[name="members_permissions-1-perms_app_mgmt"]</td>
-<td></td>
-</tr>
-<tr>
-<td>type</td>
-<td>css=select[name="members_permissions-1-perms_app_mgmt"]</td>
-<td>edit_portfolio_application_management</td>
-</tr>
-<tr>
-<td>waitForPageToLoad</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>waitForElementPresent</td>
-<td>css=select[name="members_permissions-1-perms_app_mgmt"] > option:nth-of-type(2)</td>
-<td></td>
-</tr>
-<tr>
-<td>click</td>
-<td>css=select[name="members_permissions-1-perms_app_mgmt"] > option:nth-of-type(2)</td>
-<td></td>
-</tr>
-<tr>
-<td>waitForPageToLoad</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>waitForElementPresent</td>
-<td>css=select[name="members_permissions-1-perms_reporting"]</td>
-<td></td>
-</tr>
-<tr>
-<td>type</td>
-<td>css=select[name="members_permissions-1-perms_reporting"]</td>
-<td>edit_portfolio_reports</td>
-</tr>
-<tr>
-<td>waitForPageToLoad</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>waitForElementPresent</td>
-<td>css=select[name="members_permissions-1-perms_reporting"] > option:nth-of-type(2)</td>
-<td></td>
-</tr>
-<tr>
-<td>click</td>
-<td>css=select[name="members_permissions-1-perms_reporting"] > option:nth-of-type(2)</td>
-<td></td>
-</tr>
-<tr>
-<td>waitForPageToLoad</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>waitForElementPresent</td>
-<td>css=input[type="submit"]</td>
-<td></td>
-</tr>
-<tr>
-<td>click</td>
-<td>css=input[type="submit"]</td>
-<td></td>
-</tr>
-<tr>
-<td>waitForPageToLoad</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>waitForElementPresent</td>
-<td>css=.usa-alert.usa-alert-success > .usa-alert-body > h3.usa-alert-heading</td>
-<td></td>
-</tr>
-<tr>
-<td>assertText</td>
-<td>css=.usa-alert.usa-alert-success > .usa-alert-body > h3.usa-alert-heading</td>
+<td>css=h3.usa-alert-heading</td>
 <td>*Success!*</td>
 </tr>
 <tr>
@@ -768,13 +670,13 @@ Imported from: AT-AT CI - Portfolio Settings-->
 </tr>
 <tr>
 <td>waitForElementPresent</td>
-<td>css=.usa-alert-body > p:nth-of-type(2)</td>
+<td>css=.usa-alert-text</td>
 <td></td>
 </tr>
 <tr>
 <td>assertText</td>
-<td>css=.usa-alert-body > p:nth-of-type(2)</td>
-<td>*You have successfully updated access permissions for members of Tatooine Energy Maintenance Systems.*</td>
+<td>css=.usa-alert-text</td>
+<td>*You have successfully updated access permissions for*</td>
 </tr>
 </tbody>
 </table>

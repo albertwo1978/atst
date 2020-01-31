@@ -308,7 +308,7 @@ forms:
       length_error: Filename may be no longer than 100 characters.
   task_order:
     upload_error: There was an error uploading your file. Please try again. If you encounter repeated problems uploading this file, please contact CCPO.
-    size_error: The file you have selected is too large. Please choose a file no larger than 64MB.
+    size_error: "The file you have selected is too large. Please choose a file no larger than {file_size_limit}MB."
     filename_error: File names can only contain the characters A-Z, 0-9, space, hyphen, underscore, and period.
     number_description: 13-Digit Task Order Number
     pop_errors:
@@ -524,11 +524,16 @@ task_orders:
     tooltip:
       obligated_funds: Funds committed to fund your portfolio. This may represent 100% of your total Task Order value, or a portion of it.
       total_value: All obligated and projected funds for the Task Order’s Base and Option CLINs.
-      expended_funds: All funds spend from the Task Order so far.
+      expended_funds: All funds spent from the Task Order so far.
   form:
     add_clin: Add Another CLIN
     add_to_header: Enter the Task Order number
     add_to_description: Please input your 13-digit Task Order number. This number may be listed under "Order Number" if your Contracting Officer used form 1149, or "Delivery Order/Call No." if form 1155 was used. Moving forward, this portion of funding will be referenced by the recorded Task Order number.
+    builder_base:
+      cancel_modal: Do you want to save this draft?
+      delete_draft: No, delete it
+      save_draft: Yes, save for later
+      to_number: "<strong>Task Order Number:</strong> {number}"
     clin_title: Enter Contract Line Items
     clin_description: "Refer to your task order to locate your Contract Line Item Numbers (CLINs)."
     clin_details: CLIN Details
@@ -547,16 +552,20 @@ task_orders:
     pop_end_alert: "A CLIN's period of performance must end before {end_date}."
     pop_example: "For example: 07 04 1776"
     pop_start: Start Date
-    supporting_docs_size_limit: Your file may not exceed 64MB
+    supporting_docs_size_limit: "Your file may not exceed {file_size_limit}MB"
     step_1:
       title: Upload your approved Task Order (TO)
       description: Upload your approved Task Order here. You are required to confirm you have the appropriate signature. You will have the ability to add additional approved Task Orders with more funding to this Portfolio in the future.
+      next_button: "Next: Add TO Number"
+    step_2:
+      next_button: "Next: Add Base CLIN"
     step_3:
       next_button: "Next: Review Task Order"
       percent_obligated: "% of Funds Obligated"
     step_4:
       documents: Documents
       clins: CLIN Summary
+      next_button: "Next: Confirm"
     step_5:
       cta_text: Verify Your Information
       description: Prior to submitting the Task Order, you must acknowledge, by marking the appropriate box below, that the uploaded Task Order is signed by an appropriate, duly warranted Contracting Officer who has the authority to execute the uploaded Task Order on your Agency’s behalf and has authorized you to upload the Task Order in accordance with Agency policy and procedures. You must further acknowledge, by marking the appropriate box below, that all information entered herein matches that of the submitted Task Order.

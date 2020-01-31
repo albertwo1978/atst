@@ -1,4 +1,4 @@
-from sqlalchemy import and_, Column, ForeignKey, String, UniqueConstraint
+from sqlalchemy import and_, Column, ForeignKey, String, UniqueConstraint, TIMESTAMP
 from sqlalchemy.orm import relationship, synonym
 
 from atst.models.base import Base
@@ -39,6 +39,9 @@ class Application(
             "name", "portfolio_id", name="applications_name_portfolio_id_key"
         ),
     )
+
+    cloud_id = Column(String)
+    claimed_until = Column(TIMESTAMP(timezone=True))
 
     @property
     def users(self):

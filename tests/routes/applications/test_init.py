@@ -15,7 +15,7 @@ def test_environment_access_with_env_role(client, user_session):
         url_for("applications.access_environment", environment_id=environment.id)
     )
     assert response.status_code == 302
-    assert "csp-environment-access" in response.location
+    assert "portal.azure.com" in response.location
 
 
 def test_environment_access_with_no_role(client, user_session):

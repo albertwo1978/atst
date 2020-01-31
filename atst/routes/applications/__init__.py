@@ -22,9 +22,4 @@ def wrap_environment_role_lookup(user, environment_id=None, **kwargs):
 @applications_bp.route("/environments/<environment_id>/access")
 @user_can(None, override=wrap_environment_role_lookup, message="access environment")
 def access_environment(environment_id):
-    env_role = EnvironmentRoles.get_by_user_and_environment(
-        g.current_user.id, environment_id
-    )
-    login_url = app.csp.cloud.get_environment_login_url(env_role.environment)
-
-    return redirect(url_for("atst.csp_environment_access", login_url=login_url))
+    return redirect("https://portal.azure.com")

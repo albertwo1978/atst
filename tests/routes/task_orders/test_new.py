@@ -158,7 +158,7 @@ def test_task_orders_form_step_two_add_number(client, user_session, task_order):
 
 def test_task_orders_submit_form_step_two_add_number(client, user_session, task_order):
     user_session(task_order.portfolio.owner)
-    form_data = {"number": "1234567890"}
+    form_data = {"number": "abc-1234567890"}
     response = client.post(
         url_for(
             "task_orders.submit_form_step_two_add_number", task_order_id=task_order.id
@@ -167,7 +167,7 @@ def test_task_orders_submit_form_step_two_add_number(client, user_session, task_
     )
 
     assert response.status_code == 302
-    assert task_order.number == "1234567890"
+    assert task_order.number == "ABC1234567890"  # pragma: allowlist secret
 
 
 def test_task_orders_submit_form_step_two_enforces_unique_number(
@@ -194,7 +194,7 @@ def test_task_orders_submit_form_step_two_add_number_existing_to(
     client, user_session, task_order
 ):
     user_session(task_order.portfolio.owner)
-    form_data = {"number": "0000000000"}
+    form_data = {"number": "0000000000000"}
     original_number = task_order.number
     response = client.post(
         url_for(
@@ -203,7 +203,7 @@ def test_task_orders_submit_form_step_two_add_number_existing_to(
         data=form_data,
     )
     assert response.status_code == 302
-    assert task_order.number == "0000000000"
+    assert task_order.number == "0000000000000"
     assert task_order.number != original_number
 
 
@@ -458,3 +458,61 @@ def test_task_order_form_shows_errors(client, user_session, task_order):
     body = response.data.decode()
     assert "There were some errors" in body
     assert "Not a valid decimal" in body
+
+
+def test_update_and_render_next_handles_previous_valid_data(
+    client, user_session, task_order
+):
+    user_session(task_order.portfolio.owner)
+    form_data = {"number": "0000000000000"}
+    original_number = task_order.number
+    response = client.post(
+        url_for(
+            "task_orders.submit_form_step_two_add_number",
+            task_order_id=task_order.id,
+            previous=True,
+        ),
+        data=form_data,
+    )
+    assert response.status_code == 302
+    assert task_order.number == "0000000000000"
+    assert task_order.number != original_number
+
+
+def test_update_and_render_next_handles_previous_invalid_data(
+    client, user_session, task_order
+):
+    clin_list = [
+        {
+            "jedi_clin_type": "JEDI_CLIN_1",
+            "number": "12312",
+            "start_date": "01/01/2020",
+            "end_date": "01/01/2021",
+            "obligated_amount": "5000",
+            "total_amount": "10000",
+        },
+    ]
+    TaskOrders.create_clins(task_order.id, clin_list)
+    assert len(task_order.clins) == 2
+
+    user_session(task_order.portfolio.owner)
+    form_data = {
+        "clins-0-jedi_clin_type": "JEDI_CLIN_1",
+        "clins-0-number": "12312",
+        "clins-0-start_date": "01/01/2020",
+        "clins-0-end_date": "01/01/2021",
+        "clins-0-obligated_amount": "5000",
+        "clins-0-total_amount": "10000",
+        "clins-1-jedi_clin_type": "JEDI_CLIN_1",
+        "clins-1-number": "1212",
+    }
+    response = client.post(
+        url_for(
+            "task_orders.submit_form_step_three_add_clins",
+            task_order_id=task_order.id,
+            previous=True,
+        ),
+        data=form_data,
+    )
+
+    assert len(task_order.clins) == 2

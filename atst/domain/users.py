@@ -93,10 +93,13 @@ class Users(object):
         return user
 
     @classmethod
-    def give_ccpo_perms(cls, user):
+    def give_ccpo_perms(cls, user, commit=True):
         user.permission_sets = PermissionSets.get_all()
         db.session.add(user)
-        db.session.commit()
+
+        if commit:
+            db.session.commit()
+
         return user
 
     @classmethod

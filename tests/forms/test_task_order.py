@@ -112,3 +112,37 @@ def test_no_number():
     http_request_form_data = {}
     form = TaskOrderForm(http_request_form_data)
     assert form.data["number"] is None
+
+
+def test_number_allows_alphanumeric():
+    valid_to_numbers = ["1234567890123", "ABC1234567890"]
+
+    for number in valid_to_numbers:
+        form = TaskOrderForm({"number": number})
+        assert form.validate()
+
+
+def test_number_allows_between_13_and_17_characters():
+    valid_to_numbers = ["123456789012345", "ABCDEFG1234567890"]
+
+    for number in valid_to_numbers:
+        form = TaskOrderForm({"number": number})
+        assert form.validate()
+
+
+def test_number_strips_dashes():
+    valid_to_numbers = ["123-456789-012345", "ABCD-EFG12345-67890"]
+
+    for number in valid_to_numbers:
+        form = TaskOrderForm({"number": number})
+        assert form.validate()
+        assert not "-" in form.number.data
+
+
+def test_number_case_coerces_all_caps():
+    valid_to_numbers = ["12345678012345", "AbcEFg1234567890"]
+
+    for number in valid_to_numbers:
+        form = TaskOrderForm({"number": number})
+        assert form.validate()
+        assert form.number.data == number.upper()

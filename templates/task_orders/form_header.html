@@ -7,7 +7,7 @@
     {%- endif %}
     {% if to_number %}
       <p>
-        <strong>Task Order Number:</strong> {{ to_number }}
+        {{ "task_orders.form.builder_base.to_number" | translate({ "number": to_number }) | safe }}
       </p>
     {% endif %}
     {% if description %}

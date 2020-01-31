@@ -193,6 +193,7 @@ def map_config(config):
         "CONTRACT_END_DATE": datetime.strptime(
             config.get("default", "CONTRACT_END_DATE"), "%Y-%m-%d"
         ).date(),
+        "SESSION_COOKIE_SECURE": config.getboolean("default", "SESSION_COOKIE_SECURE"),
     }
 
 

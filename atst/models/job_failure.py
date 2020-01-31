@@ -1,22 +1,21 @@
-from sqlalchemy import Column, ForeignKey
+from celery.result import AsyncResult
+from sqlalchemy import Column, String, Integer
 
 from atst.models.base import Base
 import atst.models.mixins as mixins
 
 
-class EnvironmentJobFailure(Base, mixins.JobFailureMixin):
-    __tablename__ = "environment_job_failures"
+class JobFailure(Base, mixins.TimestampsMixin):
+    __tablename__ = "job_failures"
 
-    environment_id = Column(ForeignKey("environments.id"), nullable=False)
+    id = Column(Integer(), primary_key=True)
+    task_id = Column(String(), nullable=False)
+    entity = Column(String(), nullable=False)
+    entity_id = Column(String(), nullable=False)
 
+    @property
+    def task(self):
+        if not hasattr(self, "_task"):
+            self._task = AsyncResult(self.task_id)
 
-class EnvironmentRoleJobFailure(Base, mixins.JobFailureMixin):
-    __tablename__ = "environment_role_job_failures"
-
-    environment_role_id = Column(ForeignKey("environment_roles.id"), nullable=False)
-
-
-class PortfolioJobFailure(Base, mixins.JobFailureMixin):
-    __tablename__ = "portfolio_job_failures"
-
-    portfolio_id = Column(ForeignKey("portfolios.id"), nullable=False)
+        return self._task

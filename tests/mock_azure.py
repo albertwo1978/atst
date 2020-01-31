@@ -9,6 +9,9 @@ AZURE_CONFIG = {
     "AZURE_TENANT_ID": "MOCK",
     "AZURE_POLICY_LOCATION": "policies",
     "AZURE_VAULT_URL": "http://vault",
+    "POWERSHELL_CLIENT_ID": "MOCK",
+    "AZURE_OWNER_ROLE_DEF_ID": "MOCK",
+    "AZURE_GRAPH_RESOURCE": "MOCK",
 }
 
 AUTH_CREDENTIALS = {
@@ -48,6 +51,12 @@ def mock_credentials():
     return Mock(spec=credentials)
 
 
+def mock_identity():
+    import azure.identity as identity
+
+    return Mock(spec=identity)
+
+
 def mock_policy():
     from azure.mgmt.resource import policy
 
@@ -72,9 +81,14 @@ def mock_secrets():
     return Mock(spec=secrets)
 
 
+def mock_cloud_details():
+    from msrestazure.azure_cloud import AZURE_PUBLIC_CLOUD
+
+    return AZURE_PUBLIC_CLOUD
+
+
 class MockAzureSDK(object):
     def __init__(self):
-        from msrestazure.azure_cloud import AZURE_PUBLIC_CLOUD
 
         self.subscription = mock_subscription()
         self.authorization = mock_authorization()
@@ -83,11 +97,12 @@ class MockAzureSDK(object):
         self.managementgroups = mock_managementgroups()
         self.graphrbac = mock_graphrbac()
         self.credentials = mock_credentials()
+        self.identity = mock_identity()
         self.policy = mock_policy()
         self.secrets = mock_secrets()
         self.requests = mock_requests()
-        # may change to a JEDI cloud
-        self.cloud = AZURE_PUBLIC_CLOUD
+        self.cloud = mock_cloud_details()
+        self.identity = mock_identity()
 
 
 @pytest.fixture(scope="function")

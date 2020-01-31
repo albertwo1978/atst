@@ -29,6 +29,8 @@ spec:
       containers:
         - name: atst
           image: $CONTAINER_IMAGE
+          securityContext:
+            allowPrivilegeEscalation: false
           env:
             - name: UWSGI_PROCESSES
               value: "2"
@@ -64,6 +66,8 @@ spec:
               cpu: 940m
         - name: nginx
           image: nginx:alpine
+          securityContext:
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 8342
               name: main-upgrade
@@ -189,6 +193,8 @@ spec:
       containers:
         - name: atst-worker
           image: $CONTAINER_IMAGE
+          securityContext:
+            allowPrivilegeEscalation: false
           args:
             [
               "/opt/atat/atst/.venv/bin/python",
@@ -261,6 +267,8 @@ spec:
       containers:
         - name: atst-beat
           image: $CONTAINER_IMAGE
+          securityContext:
+            allowPrivilegeEscalation: false
           args:
             [
               "/opt/atat/atst/.venv/bin/python",

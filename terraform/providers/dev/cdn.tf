@@ -5,4 +5,5 @@ module "cdn" {
   environment      = var.environment
   name             = var.name
   region           = var.region
+  workspace_id     = module.logs.workspace_id
 }

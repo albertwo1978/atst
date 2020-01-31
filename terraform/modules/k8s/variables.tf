@@ -78,3 +78,13 @@ variable "client_secret" {
   type        = string
   description = "The client secret for the Service Principal associated with the AKS cluster."
 }
+
+variable "workspace_id" {
+  description = "Log Analytics workspace for this resource to log to"
+  type        = string
+}
+
+variable "vnet_id" {
+  description = "The ID of the VNET that the AKS cluster app registration needs to provision load balancers in"
+  type        = string
+}

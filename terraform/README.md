@@ -1,11 +1,11 @@
 # ATAT Terraform
 Welcome! You've found the ATAT IaC configurations.
 
-ATAT is configured using terraform and a wrapper script called `secrets-tool`. With `terraform` we can configure infrastructure in a programatic way and ensure consistency across environments. 
+ATAT is configured using terraform and a wrapper script called `secrets-tool`. With `terraform` we can configure infrastructure in a programatic way and ensure consistency across environments.
 
 ## Directory Structure
 
-**modules/** - Terraform modules. These are modules that can be re-used for multiple environments. 
+**modules/** - Terraform modules. These are modules that can be re-used for multiple environments.
 
 **providers/** - Specific environment configurations. (dev,production, etc)
 
@@ -92,7 +92,7 @@ Check the output for errors. Sometimes the syntax is valid, but some of the conf
 
 # After running TF (Manual Steps)
 
-## VM Scale Set 
+## VM Scale Set
 After running terraform, we need to make a manual change to the VM Scale Set that is used in the kubernetes. Terraform has a bug that is not applying this as of `v1.40` of the `azurerm` provider.
 
 In order to get the `SystemAssigned` identity to be set, it needs to be set manually in the console.
@@ -253,7 +253,7 @@ Uncomment the `backend {}` section in the `provider.tf` file. Once uncommented, 
 
 *Say `yes` to the question*
 
-Now we need to update the Update `variables.tf` with the principals for the users in `admin_users` variable map. If these are not defined yet, just leave it as an empty set. 
+Now we need to update the Update `variables.tf` with the principals for the users in `admin_users` variable map. If these are not defined yet, just leave it as an empty set.
 
 Next, we'll create the operator keyvault.
 
@@ -282,3 +282,24 @@ secrets-tool secrets --keyvault https://ops-jedidev-keyvault.vault.azure.net/ cr
 `terraform apply`
 
 *[Configure AD for MFA](https://docs.microsoft.com/en-us/azure/vpn-gateway/openvpn-azure-ad-mfa)*
+
+*Then we need an instance of the container*
+
+Change directories to the repo root. Ensure that you've checked out the staging or master branch:
+
+`docker build . --build-arg CSP=azure -f ./Dockerfile -t atat:latest`
+
+*Create secrets for ATAT database user*
+
+Change directories back to terraform/secrets-tool. There is a sample file there. Make sure you know the URL for the aplication Key Vault (distinct from the operator Key Vault). Run:
+
+`secrets-tool secrets --keyvault [application key vault URL] load -f ./postgres-user.yaml
+
+*Create the database, database user, schema, and initial data set*
+
+
+This is discussed in more detail [here](https://github.com/dod-ccpo/atst/tree/staging/terraform/secrets-tool#setting-up-the-initial-atat-database). Be sure to read the requirements section.
+
+```
+secrets-tool database --keyvault [operator key vault URL] provision --app-keyvault [application key vault URL] --dbname jedidev-atat --dbhost [database host name] --ccpo-users /full/path/to/users.yml
+```

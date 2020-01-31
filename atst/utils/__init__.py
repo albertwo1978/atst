@@ -1,3 +1,4 @@
+import hashlib
 import re
 
 from sqlalchemy.exc import IntegrityError
@@ -41,3 +42,8 @@ def commit_or_raise_already_exists_error(message):
     except IntegrityError:
         db.session.rollback()
         raise AlreadyExistsError(message)
+
+
+def sha256_hex(string):
+    hsh = hashlib.sha256(string.encode())
+    return hsh.digest().hex()

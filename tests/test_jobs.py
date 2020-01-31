@@ -8,9 +8,9 @@ from atst.domain.csp.cloud import MockCloudProvider
 from atst.domain.portfolios import Portfolios
 
 from atst.jobs import (
-    RecordEnvironmentFailure,
-    RecordEnvironmentRoleFailure,
+    RecordFailure,
     dispatch_create_environment,
+    dispatch_create_application,
     dispatch_create_atat_admin_user,
     dispatch_provision_portfolio,
     dispatch_provision_user,
@@ -18,6 +18,7 @@ from atst.jobs import (
     do_provision_user,
     do_provision_portfolio,
     do_create_environment,
+    do_create_application,
     do_create_atat_admin_user,
 )
 from atst.models.utils import claim_for_update
@@ -27,9 +28,10 @@ from tests.factories import (
     EnvironmentRoleFactory,
     PortfolioFactory,
     PortfolioStateMachineFactory,
+    ApplicationFactory,
     ApplicationRoleFactory,
 )
-from atst.models import CSPRole, EnvironmentRole, ApplicationRoleStatus
+from atst.models import CSPRole, EnvironmentRole, ApplicationRoleStatus, JobFailure
 
 
 @pytest.fixture(autouse=True, scope="function")
@@ -43,8 +45,17 @@ def portfolio():
     return portfolio
 
 
-def test_environment_job_failure(celery_app, celery_worker):
-    @celery_app.task(bind=True, base=RecordEnvironmentFailure)
+def _find_failure(session, entity, id_):
+    return (
+        session.query(JobFailure)
+        .filter(JobFailure.entity == entity)
+        .filter(JobFailure.entity_id == id_)
+        .one()
+    )
+
+
+def test_environment_job_failure(session, celery_app, celery_worker):
+    @celery_app.task(bind=True, base=RecordFailure)
     def _fail_hard(self, environment_id=None):
         raise ValueError("something bad happened")
 
@@ -56,13 +67,12 @@ def test_environment_job_failure(celery_app, celery_worker):
     with pytest.raises(ValueError):
         task.get()
 
-    assert environment.job_failures
-    job_failure = environment.job_failures[0]
+    job_failure = _find_failure(session, "environment", str(environment.id))
     assert job_failure.task == task
 
 
-def test_environment_role_job_failure(celery_app, celery_worker):
-    @celery_app.task(bind=True, base=RecordEnvironmentRoleFailure)
+def test_environment_role_job_failure(session, celery_app, celery_worker):
+    @celery_app.task(bind=True, base=RecordFailure)
     def _fail_hard(self, environment_role_id=None):
         raise ValueError("something bad happened")
 
@@ -74,8 +84,7 @@ def test_environment_role_job_failure(celery_app, celery_worker):
     with pytest.raises(ValueError):
         task.get()
 
-    assert role.job_failures
-    job_failure = role.job_failures[0]
+    job_failure = _find_failure(session, "environment_role", str(role.id))
     assert job_failure.task == task
 
 
@@ -97,6 +106,24 @@ def test_create_environment_job_is_idempotent(csp, session):
     do_create_environment(csp, environment.id)
 
     csp.create_environment.assert_not_called()
+
+
+def test_create_application_job(session, csp):
+    portfolio = PortfolioFactory.create(
+        csp_data={"tenant_id": str(uuid4()), "root_management_group_id": str(uuid4())}
+    )
+    application = ApplicationFactory.create(portfolio=portfolio, cloud_id=None)
+    do_create_application(csp, application.id)
+    session.refresh(application)
+
+    assert application.cloud_id
+
+
+def test_create_application_job_is_idempotent(csp):
+    application = ApplicationFactory.create(cloud_id=uuid4())
+    do_create_application(csp, application.id)
+
+    csp.create_application.assert_not_called()
 
 
 def test_create_atat_admin_user(csp, session):
@@ -137,6 +164,21 @@ def test_dispatch_create_environment(session, monkeypatch):
     # It should cause the create_environment task to be called once with the
     # non-deleted environment
     mock.delay.assert_called_once_with(environment_id=e1.id)
+
+
+def test_dispatch_create_application(monkeypatch):
+    portfolio = PortfolioFactory.create(state="COMPLETED")
+    app = ApplicationFactory.create(portfolio=portfolio)
+
+    mock = Mock()
+    monkeypatch.setattr("atst.jobs.create_application", mock)
+
+    # When dispatch_create_application is called
+    dispatch_create_application.run()
+
+    # It should cause the create_application task to be called once
+    # with the application id
+    mock.delay.assert_called_once_with(application_id=app.id)
 
 
 def test_dispatch_create_atat_admin_user(session, monkeypatch):

@@ -11,6 +11,10 @@ def update_celery(celery, app):
             "task": "atst.jobs.dispatch_provision_portfolio",
             "schedule": 60,
         },
+        "beat-dispatch_create_application": {
+            "task": "atst.jobs.dispatch_create_application",
+            "schedule": 60,
+        },
         "beat-dispatch_create_environment": {
             "task": "atst.jobs.dispatch_create_environment",
             "schedule": 60,

@@ -32,6 +32,7 @@ data:
   REDIS_HOST: atat.redis.cache.windows.net:6380
   REDIS_TLS: "true"
   SESSION_COOKIE_DOMAIN: atat.code.mil
+  SESSION_COOKIE_SECURE: "true"
   STATIC_URL: https://atat-cdn.azureedge.net/static/
   TZ: UTC
   UWSGI_CONFIG_FULLPATH: /opt/atat/atst/uwsgi.ini

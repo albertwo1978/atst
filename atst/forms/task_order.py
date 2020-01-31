@@ -10,11 +10,13 @@ from wtforms.fields.html5 import DateField
 from wtforms.validators import (
     Required,
     Length,
+    Optional,
     NumberRange,
     ValidationError,
 )
 from flask_wtf import FlaskForm
 import numbers
+
 from atst.forms.validators import Number, AlphaNumeric
 
 from .data import JEDI_CLIN_TYPES
@@ -58,6 +60,14 @@ def validate_date_in_range(form, field):
                 },
             )
         )
+
+
+def remove_dashes(value):
+    return value.replace("-", "") if value else None
+
+
+def coerce_upper(value):
+    return value.upper() if value else None
 
 
 class CLINForm(FlaskForm):
@@ -149,14 +159,10 @@ class AttachmentForm(BaseForm):
 class TaskOrderForm(BaseForm):
     number = StringField(
         label=translate("forms.task_order.number_description"),
-        filters=[remove_empty_string],
-        validators=[Number(), Length(max=13)],
+        filters=[remove_empty_string, remove_dashes, coerce_upper],
+        validators=[AlphaNumeric(), Length(min=13, max=17), Optional()],
     )
-    pdf = FormField(
-        AttachmentForm,
-        label=translate("task_orders.form.supporting_docs_size_limit"),
-        description=translate("task_orders.form.supporting_docs_size_limit"),
-    )
+    pdf = FormField(AttachmentForm)
     clins = FieldList(FormField(CLINForm))
 
 

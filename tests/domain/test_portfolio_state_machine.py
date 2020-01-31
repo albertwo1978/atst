@@ -104,10 +104,15 @@ def test_fsm_transition_start(mock_cloud_provider, portfolio: Portfolio):
         FSMStates.TASK_ORDER_BILLING_CREATION_CREATED,
         FSMStates.TASK_ORDER_BILLING_VERIFICATION_CREATED,
         FSMStates.BILLING_INSTRUCTION_CREATED,
+        FSMStates.TENANT_PRINCIPAL_APP_CREATED,
+        FSMStates.TENANT_PRINCIPAL_CREATED,
+        FSMStates.TENANT_PRINCIPAL_CREDENTIAL_CREATED,
+        FSMStates.ADMIN_ROLE_DEFINITION_CREATED,
+        FSMStates.PRINCIPAL_ADMIN_ROLE_CREATED,
+        FSMStates.TENANT_ADMIN_OWNERSHIP_CREATED,
+        FSMStates.TENANT_PRINCIPAL_OWNERSHIP_CREATED,
     ]
 
-    # Should source all creds for portfolio? might be easier to manage than per-step specific ones
-    creds = {"username": "mock-cloud", "password": "shh"}  # pragma: allowlist secret
     if portfolio.csp_data is not None:
         csp_data = portfolio.csp_data
     else:
@@ -150,7 +155,7 @@ def test_fsm_transition_start(mock_cloud_provider, portfolio: Portfolio):
         collected_data = dict(
             list(csp_data.items()) + list(portfolio_data.items()) + list(config.items())
         )
-        sm.trigger_next_transition(creds=creds, csp_data=collected_data)
+        sm.trigger_next_transition(csp_data=collected_data)
         assert sm.state == expected_state
         if portfolio.csp_data is not None:
             csp_data = portfolio.csp_data

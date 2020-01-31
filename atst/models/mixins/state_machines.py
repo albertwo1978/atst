@@ -17,6 +17,13 @@ class AzureStages(Enum):
     TASK_ORDER_BILLING_CREATION = "task order billing creation"
     TASK_ORDER_BILLING_VERIFICATION = "task order billing verification"
     BILLING_INSTRUCTION = "billing instruction"
+    TENANT_PRINCIPAL_APP = "tenant principal application"
+    TENANT_PRINCIPAL = "tenant principal"
+    TENANT_PRINCIPAL_CREDENTIAL = "tenant principal credential"
+    ADMIN_ROLE_DEFINITION = "admin role definition"
+    PRINCIPAL_ADMIN_ROLE = "tenant principal admin"
+    TENANT_ADMIN_OWNERSHIP = "tenant admin ownership"
+    TENANT_PRINCIPAL_OWNERSHIP = "tenant principial ownership"
 
 
 def _build_csp_states(csp_stages):

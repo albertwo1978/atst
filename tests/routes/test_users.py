@@ -28,7 +28,7 @@ def test_user_can_update_profile(user_session, client):
 def test_user_is_redirected_when_updating_profile(user_session, client):
     user = UserFactory.create()
     user_session(user)
-    next_url = "/requests"
+    next_url = "/home"
 
     user_data = user.to_dictionary()
     user_data["date_latest_training"] = user_data["date_latest_training"].strftime(

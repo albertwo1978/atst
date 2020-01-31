@@ -14,7 +14,9 @@ from flask import (
 from jinja2.exceptions import TemplateNotFound
 import pendulum
 import os
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, MethodNotAllowed
+from werkzeug.routing import RequestRedirect
+
 
 from atst.domain.users import Users
 from atst.domain.authnid import AuthenticationContext
@@ -61,15 +63,34 @@ def _make_authentication_context():
 
 
 def redirect_after_login_url():
-    if request.args.get("next"):
-        returl = request.args.get("next")
-        if request.args.get(app.form_cache.PARAM_NAME):
-            returl += "?" + url.urlencode(
-                {app.form_cache.PARAM_NAME: request.args.get(app.form_cache.PARAM_NAME)}
-            )
+    returl = request.args.get("next")
+    if match_url_pattern(returl):
+        param_name = request.args.get(app.form_cache.PARAM_NAME)
+        if param_name:
+            returl += "?" + url.urlencode({app.form_cache.PARAM_NAME: param_name})
         return returl
     else:
         return url_for("atst.home")
+
+
+def match_url_pattern(url, method="GET"):
+    """Ensure a url matches a url pattern in the flask app
+    inspired by https://stackoverflow.com/questions/38488134/get-the-flask-view-function-that-matches-a-url/38488506#38488506
+    """
+    server_name = app.config.get("SERVER_NAME") or "localhost"
+    adapter = app.url_map.bind(server_name=server_name)
+
+    try:
+        match = adapter.match(url, method=method)
+    except RequestRedirect as e:
+        # recursively match redirects
+        return match_url_pattern(e.new_url, method)
+    except (MethodNotAllowed, NotFound):
+        # no match
+        return None
+
+    if match[0] in app.view_functions:
+        return url
 
 
 def current_user_setup(user):
@@ -109,13 +130,3 @@ def logout():
 @bp.route("/about")
 def about():
     return render_template("about.html")
-
-
-@bp.route("/csp-environment-access")
-def csp_environment_access():
-    return render_template("mock_csp.html", text="console for this environment")
-
-
-@bp.route("/jedi-csp-calculator")
-def jedi_csp_calculator():
-    return redirect(app.csp.cloud.get_calculator_url())

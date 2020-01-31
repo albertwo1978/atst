@@ -10,7 +10,7 @@
   {% set action = url_for("task_orders.submit_form_step_one_add_pdf", portfolio_id=portfolio.id) %}
 {% endif %}
 
-{% set next_button_text = "Next: Add TO Number" %}
+{% set next_button_text = "task_orders.form.step_1.next_button" | translate %}
 {% set step = "1" %}
 {% set sticky_cta_text = 'task_orders.form.sticky_header_text' | translate %}
 
@@ -19,5 +19,5 @@
     title='task_orders.form.step_1.title' | translate,
     description='task_orders.form.step_1.description' | translate,
   ) }}
-  {{ UploadInput(form.pdf, portfolio.id) }}
+  {{ UploadInput(form.pdf, portfolio.id, file_size_limit) }}
 {% endblock %}

@@ -32,8 +32,6 @@ class EnvironmentRole(
     )
     application_role = relationship("ApplicationRole")
 
-    job_failures = relationship("EnvironmentRoleJobFailure")
-
     csp_user_id = Column(String())
     claimed_until = Column(TIMESTAMP(timezone=True))
 

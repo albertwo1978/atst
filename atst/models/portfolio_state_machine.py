@@ -168,14 +168,6 @@ class PortfolioStateMachine(
             self.portfolio.csp_data.update(response.dict())
             db.session.add(self.portfolio)
             db.session.commit()
-
-            if getattr(response, "get_creds", None) is not None:
-                new_creds = response.get_creds()
-                # TODO: one way salted hash of tenant_id to use as kv key name?
-                tenant_id = new_creds.get("tenant_id")
-                secret = self.csp.get_secret(tenant_id, new_creds)
-                secret.update(new_creds)
-                self.csp.set_secret(tenant_id, secret)
         except PydanticValidationError as exc:
             app.logger.error(
                 f"Failed to cast response to valid result class {self.__repr__()}:",

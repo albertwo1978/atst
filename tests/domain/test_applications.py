@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import pytest
 from uuid import uuid4
 
@@ -196,3 +197,20 @@ def test_update_does_not_duplicate_names_within_portfolio():
 
     with pytest.raises(AlreadyExistsError):
         Applications.update(dupe_application, {"name": name})
+
+
+def test_get_applications_pending_creation():
+    now = datetime.now()
+    later = now + timedelta(minutes=30)
+
+    portfolio1 = PortfolioFactory.create(state="COMPLETED")
+    app_ready = ApplicationFactory.create(portfolio=portfolio1)
+
+    app_done = ApplicationFactory.create(portfolio=portfolio1, cloud_id="123456")
+
+    portfolio2 = PortfolioFactory.create(state="UNSTARTED")
+    app_not_ready = ApplicationFactory.create(portfolio=portfolio2)
+
+    uuids = Applications.get_applications_pending_creation()
+
+    assert [app_ready.id] == uuids

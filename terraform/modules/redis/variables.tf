@@ -58,3 +58,8 @@ variable "subnet_id" {
   type        = string
   description = "Subnet ID that the service_endpoint should reside"
 }
+
+variable "workspace_id" {
+  description = "Log Analytics workspace for this resource to log to"
+  type        = string
+}

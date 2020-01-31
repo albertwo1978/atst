@@ -93,3 +93,8 @@ variable "ssl_enforcement" {
   description = "Enforce SSL (Enabled/Disable)"
   default     = "Enabled"
 }
+
+variable "workspace_id" {
+  description = "Log Analytics workspace for this resource to log to"
+  type        = string
+}
