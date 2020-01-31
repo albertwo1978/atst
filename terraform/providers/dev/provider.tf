@@ -11,7 +11,7 @@ terraform {
   backend "azurerm" {
     resource_group_name  = "staging-agce-tfstate"
     storage_account_name = "stagingagcetfstate"
-    container_name       = "state"
+    container_name       = "tfstate"
     key                  = "staging.terraform.tfstate"
   }
 }

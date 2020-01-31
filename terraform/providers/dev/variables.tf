@@ -1,5 +1,5 @@
 variable "environment" {
-  default = "jedidev"
+  default = "gato"
 }
 
 variable "region" {
@@ -11,20 +11,18 @@ variable "backup_region" {
   default = "westus2"
 }
 
-
 variable "owner" {
-  default = "dev"
+  default = "gato"
 }
 
 variable "name" {
-  default = "cloudzero"
+  default = "staging"
 }
 
 variable "virtual_network" {
   type    = string
   default = "10.1.0.0/16"
 }
-
 
 variable "networks" {
   type = map
@@ -69,6 +67,21 @@ variable "k8s_node_size" {
   default = "Standard_A1_v2"
 }
 
+variable "k8s_network_plugin" {
+  type    = string
+  default = "azure"
+}
+
+variable "k8s_network_policy" {
+  type    = string
+  default = "azure"
+}
+
+variable "k8s_zones" {
+  type    = list(string)
+  default = ["1", "2", "3"]
+}
+
 variable "k8s_dns_prefix" {
   type    = string
   default = "atat"
@@ -76,32 +89,27 @@ variable "k8s_dns_prefix" {
 
 variable "tenant_id" {
   type    = string
-  default = "47f616e9-6ff5-4736-9b9e-b3f62c93a915"
+  default = "802690d9-449e-4e9d-b89b-a2519fb4e743"
 }
 
 variable "admin_users" {
   type = map
   default = {
-    "Rob Gil"      = "cef37d01-1acf-4085-96c8-da9d34d0237e"
-    "Dan Corrigan" = "7e852ceb-eb0d-49b1-b71e-e9dcd1082ffc"
+    "Albert Wolchesky"      = "bdf1178b-4518-4015-ac70-94eb7a5ebdd4"
   }
 }
 
 variable "admin_user_whitelist" {
   type = map
   default = {
-    "Rob Gil"           = "66.220.238.246/32"
-    "Dan Corrigan Work" = "108.16.207.173/32"
-    "Dan Corrigan Home" = "71.162.221.27/32"
+    "Albert Wolchesky"           = "75.27.237.179/32"
   }
 }
 
 variable "storage_admin_whitelist" {
   type = map
   default = {
-    "Rob Gil"           = "66.220.238.246"
-    "Dan Corrigan Work" = "108.16.207.173"
-    "Dan Corrigan Home" = "71.162.221.27"
+    "Albert Wolchesky"           = "75.27.237.179"
   }
 }
 
