@@ -22,7 +22,7 @@ class Portfolio(
     id = types.Id()
     name = Column(String, nullable=False)
     defense_component = Column(
-        String, nullable=False
+        ARRAY(String), nullable=False
     )  # Department of Defense Component
 
     app_migration = Column(String)  # App Migration

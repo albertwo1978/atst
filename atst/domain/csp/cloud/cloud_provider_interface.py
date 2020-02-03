@@ -112,9 +112,3 @@ class CloudProviderInterface:
         This may move to be a computed property on the Environment domain object
         """
         raise NotImplementedError()
-
-    def create_subscription(self, environment):
-        """Returns True if a new subscription has been created or raises an
-        exception if an error occurs while creating a subscription.
-        """
-        raise NotImplementedError()

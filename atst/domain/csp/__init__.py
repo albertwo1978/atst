@@ -1,5 +1,5 @@
 from .cloud import MockCloudProvider
-from .file_uploads import AzureUploader, MockUploader
+from .files import AzureFileService, MockFileService
 from .reports import MockReportingProvider
 
 
@@ -11,14 +11,14 @@ class MockCSP:
             with_failure=(not test_mode),
             with_authorization=(not test_mode),
         )
-        self.files = MockUploader(app)
+        self.files = MockFileService(app)
         self.reports = MockReportingProvider()
 
 
 class AzureCSP:
     def __init__(self, app):
         self.cloud = MockCloudProvider(app.config)
-        self.files = AzureUploader(app.config)
+        self.files = AzureFileService(app.config)
         self.reports = MockReportingProvider()
 
 

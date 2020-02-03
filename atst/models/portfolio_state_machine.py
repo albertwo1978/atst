@@ -140,7 +140,6 @@ class PortfolioStateMachine(
 
         # Accumulate payload w/ creds
         payload = event.kwargs.get("csp_data")
-        payload["creds"] = event.kwargs.get("creds")
 
         payload_data_cls = get_stage_csp_class(stage, "payload")
         if not payload_data_cls:

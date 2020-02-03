@@ -2,18 +2,21 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 
 
-class Uploader:
+class FileService:
     def generate_token(self):
-        pass
+        raise NotImplementedError()
 
     def generate_download_link(self, object_name, filename) -> (dict, str):
-        pass
+        raise NotImplementedError()
 
     def object_name(self) -> str:
         return str(uuid4())
 
+    def download_task_order(self, object_name):
+        raise NotImplementedError()
 
-class MockUploader(Uploader):
+
+class MockFileService(FileService):
     def __init__(self, config):
         self.config = config
 
@@ -23,8 +26,15 @@ class MockUploader(Uploader):
     def generate_download_link(self, object_name, filename):
         return ""
 
+    def download_task_order(self, object_name):
+        with open("tests/fixtures/sample.pdf", "rb") as some_bytes:
+            return {
+                "name": object_name,
+                "content": some_bytes,
+            }
 
-class AzureUploader(Uploader):
+
+class AzureFileService(FileService):
     def __init__(self, config):
         self.account_name = config["AZURE_ACCOUNT_NAME"]
         self.storage_key = config["AZURE_STORAGE_KEY"]
@@ -32,10 +42,12 @@ class AzureUploader(Uploader):
         self.timeout = timedelta(seconds=config["PERMANENT_SESSION_LIFETIME"])
 
         from azure.storage.common import CloudStorageAccount
-        from azure.storage.blob import BlobPermissions
+        from azure.storage.blob import BlobSasPermissions
+        from azure.storage.blob.blockblobservice import BlockBlobService
 
         self.CloudStorageAccount = CloudStorageAccount
-        self.BlobPermissions = BlobPermissions
+        self.BlobSasPermissions = BlobSasPermissions
+        self.BlockBlobService = BlockBlobService
 
     def get_token(self):
         """
@@ -53,7 +65,7 @@ class AzureUploader(Uploader):
         sas_token = bbs.generate_blob_shared_access_signature(
             self.container_name,
             object_name,
-            permission=self.BlobPermissions.CREATE,
+            permission=self.BlobSasPermissions(create=True),
             expiry=datetime.utcnow() + self.timeout,
             protocol="https",
         )
@@ -75,3 +87,17 @@ class AzureUploader(Uploader):
         return bbs.make_blob_url(
             self.container_name, object_name, protocol="https", sas_token=sas_token
         )
+
+    def download_task_order(self, object_name):
+        block_blob_service = self.BlockBlobService(
+            account_name=self.account_name, account_key=self.storage_key
+        )
+        # TODO: We should downloading errors more gracefully
+        # - what happens when we try to request a TO that doesn't exist?
+        b = block_blob_service.get_blob_to_bytes(
+            container_name=self.container_name, blob_name=object_name,
+        )
+        return {
+            "name": b.name,
+            "content": b.content,
+        }

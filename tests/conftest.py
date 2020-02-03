@@ -165,6 +165,12 @@ def pdf_upload2():
 
 
 @pytest.fixture
+def downloaded_task_order():
+    with open(PDF_FILENAME, "rb") as fp:
+        yield {"name": "mock.pdf", "content": fp.read()}
+
+
+@pytest.fixture
 def extended_financial_verification_data(pdf_upload):
     return {
         "funding_type": "RDTE",

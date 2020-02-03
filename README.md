@@ -241,6 +241,7 @@ To generate coverage reports for the Javascript tests:
 - `MAIL_SENDER`: String. Email address to send outgoing mail from.
 - `MAIL_SERVER`: The SMTP host
 - `MAIL_TLS`: Boolean. Use TLS to connect to the SMTP server.
+- `MICROSOFT_TASK_ORDER_EMAIL_ADDRESS`: String. Email address for Microsoft to receive PDFs of new and updated task orders.
 - `PERMANENT_SESSION_LIFETIME`: Integer specifying how many seconds a user's session can stay valid for. https://flask.palletsprojects.com/en/1.1.x/config/#PERMANENT_SESSION_LIFETIME
 - `PGDATABASE`: String specifying the name of the postgres database.
 - `PGHOST`: String specifying the hostname of the postgres database.

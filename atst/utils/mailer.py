@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 import smtplib
+import io
 from email.message import EmailMessage
 
 
@@ -76,8 +77,34 @@ class Mailer(object):
 
         return msg
 
-    def send(self, recipients, subject, body):
+    def _add_attachment(self, message, content, filename, maintype, subtype):
+        with io.BytesIO(content) as bytes_:
+            message.add_attachment(
+                bytes_.read(), filename=filename, maintype=maintype, subtype=subtype
+            )
+
+    def send(self, recipients, subject, body, attachments=[]):
+        """
+        Send a message, optionally with attachments.
+        Attachments should be provided as a list of dictionaries of the form:
+        {
+            content: bytes,
+            maintype: string,
+            subtype: string,
+            filename: string,
+        }
+        """
         message = self._build_message(recipients, subject, body)
+        if attachments:
+            message.make_mixed()
+            for attachment in attachments:
+                self._add_attachment(
+                    message,
+                    content=attachment["content"],
+                    filename=attachment["filename"],
+                    maintype=attachment.get("maintype", "application"),
+                    subtype=attachment.get("subtype", "octet-stream"),
+                )
         self.connection.send(message)
 
     @property

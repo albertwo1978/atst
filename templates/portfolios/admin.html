@@ -40,19 +40,18 @@
         </div>
       {% endif %}
 
-        <div class='defense-row'>
-          <div>
-            <div class='admin-title'>{{ "portfolios.admin.defense_component_label" | translate }}</div>
-            {% if portfolio.defense_component %}
-              <div class='admin-content'>
-                {% for component in portfolio.defense_component %}
-                  {{ "forms.portfolio.defense_component.choices.%s" | format(component) | translate }}<br>
-                {% endfor %}
-              </div>
-            {% else %}
-              <div class='admin-content'>{{ "fragments.portfolio_admin.none" | translate }}</div>
-            {% endif %}
-          </div>
+      <div class='defense-row'>
+        <div>
+          <div class='admin-title'>{{ "portfolios.admin.defense_component_label" | translate }}</div>
+          {% if portfolio.defense_component %}
+            <div class='admin-content'>
+              {% for component in portfolio.defense_component %}
+                {{ "forms.portfolio.defense_component.choices.%s" | format(component) | translate }}<br>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class='admin-content'>{{ "fragments.portfolio_admin.none" | translate }}</div>
+          {% endif %}
         </div>
       </div>
     </section>

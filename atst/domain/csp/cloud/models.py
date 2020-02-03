@@ -406,3 +406,71 @@ class KeyVaultCredentials(BaseModel):
             )
 
         return values
+
+
+class SubscriptionCreationCSPPayload(BaseCSPPayload):
+    display_name: str
+    parent_group_id: str
+    billing_account_name: str
+    billing_profile_name: str
+    invoice_section_name: str
+
+
+class SubscriptionCreationCSPResult(AliasModel):
+    subscription_verify_url: str
+    subscription_retry_after: int
+
+    class Config:
+        fields = {
+            "subscription_verify_url": "Location",
+            "subscription_retry_after": "Retry-After",
+        }
+
+
+class SubscriptionVerificationCSPPayload(BaseCSPPayload):
+    subscription_verify_url: str
+
+
+SUBSCRIPTION_ID_REGEX = re.compile(
+    "\/?subscriptions\/([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})",
+    re.I,
+)
+
+
+class SuscriptionVerificationCSPResult(AliasModel):
+    subscription_id: str
+
+    @validator("subscription_id", pre=True, always=True)
+    def enforce_display_name_length(cls, sub_id):
+        sub_id_match = SUBSCRIPTION_ID_REGEX.match(sub_id)
+        if sub_id_match:
+            return sub_id_match.group(1)
+
+        return False
+
+    class Config:
+        fields = {"subscription_id": "subscriptionLink"}
+
+
+class ProductPurchaseCSPPayload(BaseCSPPayload):
+    billing_account_name: str
+    billing_profile_name: str
+
+
+class ProductPurchaseCSPResult(AliasModel):
+    product_purchase_verify_url: str
+    product_purchase_retry_after: int
+
+    class Config:
+        fields = {
+            "product_purchase_verify_url": "Location",
+            "product_purchase_retry_after": "Retry-After",
+        }
+
+
+class ProductPurchaseVerificationCSPPayload(BaseCSPPayload):
+    product_purchase_verify_url: str
+
+
+class ProductPurchaseVerificationCSPResult(AliasModel):
+    premium_purchase_date: str

@@ -1,5 +1,4 @@
 import json
-import re
 from secrets import token_urlsafe
 from typing import Any, Dict
 from uuid import uuid4
@@ -9,6 +8,10 @@ from atst.utils import sha256_hex
 from .cloud_provider_interface import CloudProviderInterface
 from .exceptions import AuthenticationException
 from .models import (
+    SubscriptionCreationCSPPayload,
+    SubscriptionCreationCSPResult,
+    SubscriptionVerificationCSPPayload,
+    SuscriptionVerificationCSPResult,
     AdminRoleDefinitionCSPPayload,
     AdminRoleDefinitionCSPResult,
     ApplicationCSPPayload,
@@ -23,6 +26,10 @@ from .models import (
     BillingProfileVerificationCSPResult,
     KeyVaultCredentials,
     ManagementGroupCSPResponse,
+    ProductPurchaseCSPPayload,
+    ProductPurchaseCSPResult,
+    ProductPurchaseVerificationCSPPayload,
+    ProductPurchaseVerificationCSPResult,
     PrincipalAdminRoleCSPPayload,
     PrincipalAdminRoleCSPResult,
     TaskOrderBillingCreationCSPPayload,
@@ -44,10 +51,6 @@ from .models import (
 )
 from .policy import AzurePolicyManager
 
-SUBSCRIPTION_ID_REGEX = re.compile(
-    "subscriptions\/([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})",
-    re.I,
-)
 
 # This needs to be a fully pathed role definition identifier, not just a UUID
 # TODO: Extract these from sdk msrestazure.azure_cloud import AZURE_PUBLIC_CLOUD
@@ -95,6 +98,7 @@ class AzureCloudProvider(CloudProviderInterface):
         self.ps_client_id = config["POWERSHELL_CLIENT_ID"]
         self.owner_role_def_id = config["AZURE_OWNER_ROLE_DEF_ID"]
         self.graph_resource = config["AZURE_GRAPH_RESOURCE"]
+        self.default_aadp_qty = config["AZURE_AADP_QTY"]
 
         if azure_sdk_provider is None:
             self.sdk = AzureSDKProvider()
@@ -230,49 +234,6 @@ class AzureCloudProvider(CloudProviderInterface):
         # response object? Will it always raise its own error
         # instead?
         return create_request.result()
-
-    def _create_subscription(
-        self,
-        credentials,
-        display_name,
-        billing_profile_id,
-        sku_id,
-        management_group_id,
-        billing_account_name,
-        invoice_section_name,
-    ):
-        sub_client = self.sdk.subscription.SubscriptionClient(credentials)
-
-        billing_profile_id = "?"  # where do we source this?
-        sku_id = AZURE_SKU_ID
-        # These 2 seem like something that might be worthwhile to allow tiebacks to
-        # TOs filed for the environment
-        billing_account_name = "?"  # from TO?
-        invoice_section_name = "?"  # from TO?
-
-        body = self.sdk.subscription.models.ModernSubscriptionCreationParameters(
-            display_name=display_name,
-            billing_profile_id=billing_profile_id,
-            sku_id=sku_id,
-            management_group_id=management_group_id,
-        )
-
-        # We may also want to create billing sections in the enrollment account
-        sub_creation_operation = sub_client.subscription_factory.create_subscription(
-            billing_account_name, invoice_section_name, body
-        )
-
-        # the resulting object from this process is a link to the new subscription
-        # not a subscription model, so we'll have to unpack the ID
-        new_sub = sub_creation_operation.result()
-
-        subscription_id = self._extract_subscription_id(new_sub.subscription_link)
-        if subscription_id:
-            return subscription_id
-        else:
-            # troublesome error, subscription should exist at this point
-            # but we just don't have a valid ID
-            pass
 
     def _create_policy_definition(
         self, credentials, subscription_id, management_group_id, properties,
@@ -514,6 +475,123 @@ class AzureCloudProvider(CloudProviderInterface):
 
         if result.status_code == 200:
             return self._ok(BillingInstructionCSPResult(**result.json()))
+        else:
+            return self._error(result.json())
+
+    def create_subscription(self, payload: SubscriptionCreationCSPPayload):
+        sp_token = self._get_tenant_principal_token(payload.tenant_id)
+        if sp_token is None:
+            raise AuthenticationException(
+                "Could not resolve token for subscription creation"
+            )
+
+        request_body = {
+            "displayName": payload.display_name,
+            "skuId": AZURE_SKU_ID,
+            "managementGroupId": payload.parent_group_id,
+        }
+
+        url = f"{self.sdk.cloud.endpoints.resource_manager}/providers/Microsoft.Billing/billingAccounts/{payload.billing_account_name}/billingProfiles/{payload.billing_profile_name}/invoiceSections/{payload.invoice_section_name}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview"
+
+        auth_header = {
+            "Authorization": f"Bearer {sp_token}",
+        }
+
+        result = self.sdk.requests.put(url, headers=auth_header, json=request_body)
+
+        if result.status_code in [200, 202]:
+            # 202 has location/retry after headers
+            return SubscriptionCreationCSPResult(**result.headers, **result.json())
+        else:
+            return self._error(result.json())
+
+    def create_subscription_creation(self, payload: SubscriptionCreationCSPPayload):
+        return self.create_subscription(payload)
+
+    def create_subscription_verification(
+        self, payload: SubscriptionVerificationCSPPayload
+    ):
+        sp_token = self._get_tenant_principal_token(payload.tenant_id)
+        if sp_token is None:
+            raise AuthenticationException(
+                "Could not resolve token for subscription verification"
+            )
+
+        auth_header = {
+            "Authorization": f"Bearer {sp_token}",
+        }
+
+        result = self.sdk.requests.get(
+            payload.subscription_verify_url, headers=auth_header
+        )
+
+        if result.ok:
+            # 202 has location/retry after headers
+            return SuscriptionVerificationCSPResult(**result.json())
+        else:
+            return self._error(result.json())
+
+    def create_product_purchase(self, payload: ProductPurchaseCSPPayload):
+        sp_token = self._get_root_provisioning_token()
+        if sp_token is None:
+            raise AuthenticationException(
+                "Could not resolve token for aad premium product purchase"
+            )
+
+        create_product_purchase_body = {
+            "type": "AADPremium",
+            "sku": "AADP1",
+            "productProperties": {"beneficiaryTenantId": payload.tenant_id,},
+            "quantity": self.default_aadp_qty,
+        }
+        create_product_purchase_headers = {
+            "Authorization": f"Bearer {sp_token}",
+        }
+
+        product_purchase_url = f"https://management.azure.com/providers/Microsoft.Billing/billingAccounts/{payload.billing_account_name}/billingProfiles/{payload.billing_profile_name}/purchaseProduct?api-version=2019-10-01-preview"
+
+        result = self.sdk.requests.post(
+            product_purchase_url,
+            json=create_product_purchase_body,
+            headers=create_product_purchase_headers,
+        )
+
+        if result.status_code == 202:
+            # 202 has location/retry after headers
+            return self._ok(ProductPurchaseCSPResult(**result.headers))
+        elif result.status_code == 200:
+            # NB: Swagger docs imply call can sometimes resolve immediately
+            return self._ok(ProductPurchaseVerificationCSPResult(**result.json()))
+        else:
+            return self._error(result.json())
+
+    def create_product_purchase_verification(
+        self, payload: ProductPurchaseVerificationCSPPayload
+    ):
+        sp_token = self._get_root_provisioning_token()
+        if sp_token is None:
+            raise AuthenticationException(
+                "Could not resolve token for aad premium product purchase validation"
+            )
+
+        auth_header = {
+            "Authorization": f"Bearer {sp_token}",
+        }
+
+        result = self.sdk.requests.get(
+            payload.product_purchase_verify_url, headers=auth_header
+        )
+
+        if result.status_code == 202:
+            # 202 has location/retry after headers
+            return self._ok(ProductPurchaseCSPResult(**result.headers))
+        elif result.status_code == 200:
+            premium_purchase_date = result.json()["properties"]["purchaseDate"]
+            return self._ok(
+                ProductPurchaseVerificationCSPResult(
+                    premium_purchase_date=premium_purchase_date
+                )
+            )
         else:
             return self._error(result.json())
 
@@ -790,7 +868,7 @@ class AzureCloudProvider(CloudProviderInterface):
     def _get_root_provisioning_token(self):
         creds = self._source_creds()
         return self._get_sp_token(
-            creds.tenant_id, creds.root_sp_client_id, creds.root_sp_key
+            creds.root_tenant_id, creds.root_sp_client_id, creds.root_sp_key
         )
 
     def _get_sp_token(self, tenant_id, client_id, secret_key):
@@ -860,6 +938,12 @@ class AzureCloudProvider(CloudProviderInterface):
             "secret_key": self.secret_key,
             "tenant_id": self.tenant_id,
         }
+
+    def _get_tenant_principal_token(self, tenant_id):
+        creds = self._source_creds(tenant_id)
+        return self._get_sp_token(
+            creds.tenant_id, creds.tenant_sp_client_id, creds.tenant_sp_key
+        )
 
     def _get_elevated_management_token(self, tenant_id):
         mgmt_token = self._get_tenant_admin_token(

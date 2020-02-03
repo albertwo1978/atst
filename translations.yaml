@@ -84,6 +84,9 @@ email:
   application_invite: "{inviter_name} has invited you to a JEDI cloud application"
   portfolio_invite: "{inviter_name} has invited you to a JEDI cloud portfolio"
   environment_ready: JEDI cloud environment ready
+  task_order_sent:
+    subject: "Task Order {to_number}"
+    body: "Task Order number {to_number} updated."
 empty_state:
   applications:
     header:
@@ -480,7 +483,6 @@ portfolios:
         "False": View Team
         "True": Edit Team
       perms_env_mgmt:
-
         "False": View Environments
         "True": Edit Environments
       roles:

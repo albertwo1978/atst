@@ -25,8 +25,16 @@ from .models import (
     BillingProfileTenantAccessCSPResult,
     BillingProfileVerificationCSPPayload,
     BillingProfileVerificationCSPResult,
+    ProductPurchaseCSPPayload,
+    ProductPurchaseCSPResult,
+    ProductPurchaseVerificationCSPPayload,
+    ProductPurchaseVerificationCSPResult,
     PrincipalAdminRoleCSPPayload,
     PrincipalAdminRoleCSPResult,
+    SubscriptionCreationCSPPayload,
+    SubscriptionCreationCSPResult,
+    SubscriptionVerificationCSPPayload,
+    SuscriptionVerificationCSPResult,
     TaskOrderBillingCreationCSPPayload,
     TaskOrderBillingCreationCSPResult,
     TaskOrderBillingVerificationCSPPayload,
@@ -108,6 +116,29 @@ class MockCloudProvider(CloudProviderInterface):
         self._maybe_raise(self.UNAUTHORIZED_RATE, self.AUTHORIZATION_EXCEPTION)
 
         return csp_environment_id
+
+    def create_subscription(self, payload: SubscriptionCreationCSPPayload):
+        return self.create_subscription_creation(payload)
+
+    def create_subscription_creation(self, payload: SubscriptionCreationCSPPayload):
+        self._maybe_raise(self.NETWORK_FAILURE_PCT, self.NETWORK_EXCEPTION)
+        self._maybe_raise(self.SERVER_FAILURE_PCT, self.SERVER_EXCEPTION)
+        self._maybe_raise(self.UNAUTHORIZED_RATE, self.AUTHORIZATION_EXCEPTION)
+
+        return SubscriptionCreationCSPResult(
+            subscription_verify_url="https://zombo.com", subscription_retry_after=10
+        )
+
+    def create_subscription_verification(
+        self, payload: SubscriptionVerificationCSPPayload
+    ):
+        self._maybe_raise(self.NETWORK_FAILURE_PCT, self.NETWORK_EXCEPTION)
+        self._maybe_raise(self.SERVER_FAILURE_PCT, self.SERVER_EXCEPTION)
+        self._maybe_raise(self.UNAUTHORIZED_RATE, self.AUTHORIZATION_EXCEPTION)
+
+        return SuscriptionVerificationCSPResult(
+            subscription_id="subscriptions/60fbbb72-0516-4253-ab18-c92432ba3230"
+        )
 
     def create_atat_admin_user(self, auth_credentials, csp_environment_id):
         self._authorize(auth_credentials)
@@ -288,11 +319,33 @@ class MockCloudProvider(CloudProviderInterface):
             }
         )
 
-    def create_tenant_admin_ownership(self, payload: TenantAdminOwnershipCSPPayload):
+    def create_product_purchase(self, payload: ProductPurchaseCSPPayload):
         self._maybe_raise(self.NETWORK_FAILURE_PCT, self.NETWORK_EXCEPTION)
         self._maybe_raise(self.SERVER_FAILURE_PCT, self.SERVER_EXCEPTION)
         self._maybe_raise(self.UNAUTHORIZED_RATE, self.AUTHORIZATION_EXCEPTION)
 
+        return ProductPurchaseCSPResult(
+            **dict(
+                product_purchase_verify_url="https://zombo.com",
+                product_purchase_retry_after=10,
+            )
+        )
+
+    def create_product_purchase_verification(
+        self, payload: ProductPurchaseVerificationCSPPayload
+    ):
+        self._maybe_raise(self.NETWORK_FAILURE_PCT, self.NETWORK_EXCEPTION)
+        self._maybe_raise(self.SERVER_FAILURE_PCT, self.SERVER_EXCEPTION)
+        self._maybe_raise(self.UNAUTHORIZED_RATE, self.AUTHORIZATION_EXCEPTION)
+
+        return ProductPurchaseVerificationCSPResult(
+            **dict(premium_purchase_date="2020-01-30T18:57:05.981Z")
+        )
+
+    def create_tenant_admin_ownership(self, payload: TenantAdminOwnershipCSPPayload):
+        self._maybe_raise(self.NETWORK_FAILURE_PCT, self.NETWORK_EXCEPTION)
+        self._maybe_raise(self.SERVER_FAILURE_PCT, self.SERVER_EXCEPTION)
+        self._maybe_raise(self.UNAUTHORIZED_RATE, self.AUTHORIZATION_EXCEPTION)
         return TenantAdminOwnershipCSPResult(**dict(id="admin_owner_assignment_id"))
 
     def create_tenant_principal_ownership(
@@ -381,11 +434,6 @@ class MockCloudProvider(CloudProviderInterface):
         )
 
         return self._maybe(12)
-
-    def create_subscription(self, environment):
-        self._maybe_raise(self.UNAUTHORIZED_RATE, GeneralCSPException)
-
-        return True
 
     def get_calculator_url(self):
         return "https://www.rackspace.com/en-us/calculator"

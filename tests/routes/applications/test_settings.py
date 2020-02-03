@@ -1,34 +1,37 @@
-import uuid
-from flask import url_for, get_flashed_messages
-from unittest.mock import Mock
 import datetime
-from werkzeug.datastructures import ImmutableMultiDict
+import uuid
+from unittest.mock import Mock, patch
+
 import pytest
-
+from flask import get_flashed_messages, url_for
 from tests.factories import *
+from tests.mock_azure import mock_azure
+from tests.utils import captured_templates
+from werkzeug.datastructures import ImmutableMultiDict
 
-from atst.domain.applications import Applications
+from atst.database import db
 from atst.domain.application_roles import ApplicationRoles
+from atst.domain.applications import Applications
+from atst.domain.common import Paginator
+from atst.domain.csp.cloud.azure_cloud_provider import AzureCloudProvider
+from atst.domain.csp.cloud.exceptions import GeneralCSPException
+from atst.domain.csp.cloud.models import SubscriptionCreationCSPResult
 from atst.domain.environment_roles import EnvironmentRoles
 from atst.domain.invitations import ApplicationInvitations
-from atst.domain.common import Paginator
-from atst.domain.csp.cloud.exceptions import GeneralCSPException
 from atst.domain.permission_sets import PermissionSets
-from atst.models.application_role import Status as ApplicationRoleStatus
-from atst.models.environment_role import CSPRole, EnvironmentRole
-from atst.models.permissions import Permissions
 from atst.forms.application import EditEnvironmentForm
 from atst.forms.application_member import UpdateMemberForm
 from atst.forms.data import ENV_ROLE_NO_ACCESS as NO_ACCESS
+from atst.models.application_role import Status as ApplicationRoleStatus
+from atst.models.environment_role import CSPRole, EnvironmentRole
+from atst.models.permissions import Permissions
 from atst.routes.applications.settings import (
-    filter_env_roles_form_data,
     filter_env_roles_data,
+    filter_env_roles_form_data,
     get_environments_obj_for_app,
     handle_create_member,
     handle_update_member,
 )
-
-from tests.utils import captured_templates
 
 
 def test_updating_application_environments_success(client, user_session):
@@ -779,22 +782,41 @@ def test_handle_update_member_with_error(set_g, monkeypatch, mock_logger):
     assert mock_logger.messages[-1] == exception
 
 
-def test_create_subscription_success(client, user_session):
+def test_create_subscription_success(
+    client, user_session, mock_azure: AzureCloudProvider
+):
     environment = EnvironmentFactory.create()
 
     user_session(environment.portfolio.owner)
-    response = client.post(
-        url_for("applications.create_subscription", environment_id=environment.id),
-    )
+    environment.cloud_id = "management/group/id"
+    environment.application.portfolio.csp_data = {
+        "billing_account_name": "xxxx-xxxx-xxx-xxx",
+        "billing_profile_name": "xxxxxxxxxxx:xxxxxxxxxxxxx_xxxxxx",
+        "tenant_id": "xxxxxxxxxxx-xxxxxxxxxx-xxxxxxx-xxxxx",
+        "billing_profile_properties": {
+            "invoice_sections": [{"invoice_section_name": "xxxx-xxxx-xxx-xxx"}]
+        },
+    }
 
-    assert response.status_code == 302
-    assert response.location == url_for(
-        "applications.settings",
-        application_id=environment.application.id,
-        _external=True,
-        fragment="application-environments",
-        _anchor="application-environments",
-    )
+    with patch.object(
+        AzureCloudProvider, "create_subscription", wraps=mock_azure.create_subscription,
+    ) as create_subscription:
+        create_subscription.return_value = SubscriptionCreationCSPResult(
+            subscription_verify_url="https://zombo.com", subscription_retry_after=10
+        )
+
+        response = client.post(
+            url_for("applications.create_subscription", environment_id=environment.id),
+        )
+
+        assert response.status_code == 302
+        assert response.location == url_for(
+            "applications.settings",
+            application_id=environment.application.id,
+            _external=True,
+            fragment="application-environments",
+            _anchor="application-environments",
+        )
 
 
 def test_create_subscription_failure(client, user_session, monkeypatch):
@@ -809,6 +831,16 @@ def test_create_subscription_failure(client, user_session, monkeypatch):
     )
 
     user_session(environment.portfolio.owner)
+    environment.cloud_id = "management/group/id"
+    environment.application.portfolio.csp_data = {
+        "billing_account_name": "xxxx-xxxx-xxx-xxx",
+        "billing_profile_name": "xxxxxxxxxxx:xxxxxxxxxxxxx_xxxxxx",
+        "tenant_id": "xxxxxxxxxxx-xxxxxxxxxx-xxxxxxx-xxxxx",
+        "billing_profile_properties": {
+            "invoice_sections": [{"invoice_section_name": "xxxx-xxxx-xxx-xxx"}]
+        },
+    }
+
     response = client.post(
         url_for("applications.create_subscription", environment_id=environment.id),
     )
