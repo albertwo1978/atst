@@ -29,7 +29,6 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   network_profile {
     load_balancer_sku     = "standard"
     network_plugin        = var.k8s_network_plugin
-    network_policy        = var.k8s_network_policy
   }
 
   identity {

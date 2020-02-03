@@ -17,7 +17,6 @@ module "k8s" {
   k8s_dns_prefix      = var.k8s_dns_prefix
   k8s_node_size       = var.k8s_node_size
   k8s_network_plugin      = var.k8s_network_plugin
-  k8s_network_policy      = var.k8s_network_policy
   vnet_subnet_id      = module.vpc.subnets #FIXME - output from module.vpc.subnets should be map
   enable_auto_scaling = true
   max_count           = 5

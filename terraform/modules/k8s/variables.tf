@@ -31,12 +31,7 @@ variable "k8s_node_size" {
 
 variable "k8s_network_plugin" {
   type    = string
-  default = "azure"
-}
-
-variable "k8s_network_policy" {
-  type    = string
-  default = "azure"
+  default = "kubenet"
 }
 
 variable "k8s_zones" {
