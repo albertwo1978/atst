@@ -1,9 +1,9 @@
 variable "environment" {
-  default = "gato"
+  default = "e2e2"
 }
 
 variable "region" {
-  default = "eastus"
+  default = "canadacentral"
 
 }
 
@@ -12,7 +12,7 @@ variable "backup_region" {
 }
 
 variable "owner" {
-  default = "gato"
+  default = "e2e2"
 }
 
 variable "name" {
@@ -32,7 +32,7 @@ variable "networks" {
     public  = "10.1.1.0/24,public"  # LBs
     private = "10.1.2.0/24,private" # k8s, postgres, keyvault
     redis   = "10.1.3.0/24,private" # Redis
-    apps    = "10.1.4.0/24,private" # Redis
+    apps    = "10.1.4.0/24,private" # Apps
   }
 }
 
@@ -69,12 +69,12 @@ variable "k8s_node_size" {
 
 variable "k8s_network_plugin" {
   type    = string
-  default = "kubenet"
+  default = "azure"
 }
 
 variable "k8s_zones" {
   type    = list(string)
-  default = ["1", "2", "3"]
+  default = ["1", "2"]
 }
 
 variable "k8s_dns_prefix" {
@@ -84,13 +84,13 @@ variable "k8s_dns_prefix" {
 
 variable "tenant_id" {
   type    = string
-  default = "802690d9-449e-4e9d-b89b-a2519fb4e743"
+  default = "72f988bf-86f1-41af-91ab-2d7cd011db47"
 }
 
 variable "admin_users" {
   type = map
   default = {
-    "Albert Wolchesky"      = "bdf1178b-4518-4015-ac70-94eb7a5ebdd4"
+    "Albert Wolchesky"      = "ec452237-8913-48c1-8b7d-ed60599eef32"
   }
 }
 

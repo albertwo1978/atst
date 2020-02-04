@@ -64,11 +64,11 @@ resource "azurerm_subnet_route_table_association" "route_table" {
   route_table_id = azurerm_route_table.route_table[each.key].id
 }
 
-resource "azurerm_route" "route" {
-  for_each            = var.route_tables
-  name                = "${var.name}-${var.environment}-default"
-  resource_group_name = azurerm_resource_group.vpc.name
-  route_table_name    = azurerm_route_table.route_table[each.key].name
-  address_prefix      = "0.0.0.0/0"
-  next_hop_type       = each.value
-}
+#resource "azurerm_route" "route" {
+#  for_each            = var.route_tables
+#  name                = "${var.name}-${var.environment}-default"
+#  resource_group_name = azurerm_resource_group.vpc.name
+#  route_table_name    = azurerm_route_table.route_table[each.key].name
+#  address_prefix      = "0.0.0.0/0"
+#  next_hop_type       = each.value
+#}

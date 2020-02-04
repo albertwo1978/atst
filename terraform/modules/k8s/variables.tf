@@ -31,13 +31,13 @@ variable "k8s_node_size" {
 
 variable "k8s_network_plugin" {
   type    = string
-  default = "kubenet"
+  default = "azure"
 }
 
 variable "k8s_zones" {
   description = "Number of Availability Zones for k8s node pool"
   type    = list(string)
-  default = ["1", "2", "3"]
+  default = ["1", "2"]
 }
 
 variable "vnet_subnet_id" {

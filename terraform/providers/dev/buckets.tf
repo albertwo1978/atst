@@ -2,7 +2,7 @@
 # which is why the policy here is "Allow"
 module "task_order_bucket" {
   source       = "../../modules/bucket"
-  service_name = "agcetasksatat"
+  service_name = "e2e2tasksatat"
   owner        = var.owner
   name         = var.name
   environment  = var.environment
@@ -18,7 +18,7 @@ module "task_order_bucket" {
 # not be able to access it when running TF without being on a VPN.
 module "tf_state" {
   source       = "../../modules/bucket"
-  service_name = "agcedevtfstate"
+  service_name = "e2e2devtfstate"
   owner        = var.owner
   name         = var.name
   environment  = var.environment

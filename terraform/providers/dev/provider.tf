@@ -10,7 +10,7 @@ provider "azuread" {
 terraform {
   backend "azurerm" {
     resource_group_name  = "staging-agce-tfstate"
-    storage_account_name = "stagingagcetfstate"
+    storage_account_name = "alwstagingagcetfstate"
     container_name       = "tfstate"
     key                  = "staging.terraform.tfstate"
   }
