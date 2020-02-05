@@ -52,7 +52,7 @@ resource "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_route_table" "route_table" {
-  for_each            = var.route_tables
+  for_each            = var.networks
   name                = "${var.name}-${var.environment}-${each.key}"
   location            = azurerm_resource_group.vpc.location
   resource_group_name = azurerm_resource_group.vpc.name
@@ -64,11 +64,23 @@ resource "azurerm_subnet_route_table_association" "route_table" {
   route_table_id = azurerm_route_table.route_table[each.key].id
 }
 
-#resource "azurerm_route" "route" {
-#  for_each            = var.route_tables
-#  name                = "${var.name}-${var.environment}-default"
-#  resource_group_name = azurerm_resource_group.vpc.name
+resource "azurerm_route" "route" {
+ for_each            = var.routes
+  name                = "${var.name}-${var.environment}-${element(split(",", each.value), 1)}"
+  resource_group_name = azurerm_resource_group.vpc.name
+  route_table_name    = "${var.name}-${var.environment}-${element(split(",", each.value), 0)}"
 #  route_table_name    = azurerm_route_table.route_table[each.key].name
-#  address_prefix      = "0.0.0.0/0"
-#  next_hop_type       = each.value
-#}
+  address_prefix      = element(split(",", each.value), 2)
+  next_hop_type       = element(split(",", each.value), 3)
+}
+
+resource "azurerm_route" "virtual_appliance_route" {
+ for_each            = var.virtual_appliance_routes
+  name                = "${var.name}-${var.environment}-${element(split(",", each.value), 1)}"
+  resource_group_name = azurerm_resource_group.vpc.name
+  route_table_name    = "${var.name}-${var.environment}-${element(split(",", each.value), 0)}"
+#  route_table_name    = azurerm_route_table.route_table[each.key].name
+  address_prefix      = element(split(",", each.value), 2)
+  next_hop_type       = element(split(",", each.value), 3)
+  next_hop_in_ip_address    = element(split(",", each.value), 4)
+}

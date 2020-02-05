@@ -36,9 +36,14 @@ variable "dns_servers" {
   type        = list
 }
 
-variable "route_tables" {
+variable "routes" {
   type        = map
-  description = "A map with the route tables to create"
+  description = "Routes for next hop types: VirtualNetworkGateway, VirtualNetwork, Internet and None"
+}
+
+variable "virtual_appliance_routes" {
+  type        = map
+  description = "Routes for next hop types: VirtualAppliance"
 }
 
 variable "service_endpoints" {

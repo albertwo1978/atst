@@ -46,14 +46,19 @@ variable "service_endpoints" {
   }
 }
 
-variable "route_tables" {
-  description = "Route tables and their default routes"
+variable "routes" {
+  description = "Routes for next hop types: VirtualNetworkGateway, VirtualNetwork, Internet and None"
   type        = map
   default = {
-    public  = "Internet"
-    private = "Internet" # TODO: Switch to FW
-    redis   = "VnetLocal"
-    apps    = "Internet" # TODO: Switch to FW
+    private1 = "private,firewall,52.139.8.215/32,Internet" 
+  }
+}
+
+variable "virtual_appliance_routes" {
+  description = "Routes for next hop types VirtualAppliance"
+  type        = map
+  default = {
+    private1 = "private,default,0.0.0.0/0,VirtualAppliance,10.0.1.4"
   }
 }
 
