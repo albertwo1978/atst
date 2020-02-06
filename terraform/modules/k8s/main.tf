@@ -31,9 +31,14 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     network_plugin        = var.k8s_network_plugin
   }
 
-  identity {
-    type = "SystemAssigned"
+  role_based_access_control {
+    enabled = true
   }
+
+  #identity {
+  #  type = "SystemAssigned"
+  #}
+
   lifecycle {
     ignore_changes = [
       default_node_pool.0.node_count
@@ -89,7 +94,8 @@ resource "azurerm_monitor_diagnostic_setting" "k8s_diagnostic-1" {
 }
 
 resource "azurerm_role_assignment" "k8s_network_contrib" {
-  scope                = var.vnet_id
-  role_definition_name = "Network Contributor"
-  principal_id         = azurerm_kubernetes_cluster.k8s.identity[0].principal_id
+  scope                             = var.vnet_id
+  role_definition_name              = "Network Contributor"
+  principal_id                      = "c344ac0e-e09e-4f19-8257-a3fa3d737692"
+  skip_service_principal_aad_check  = true
 }
