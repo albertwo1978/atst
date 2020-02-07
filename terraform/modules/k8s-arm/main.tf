@@ -1,12 +1,10 @@
-resource "azurerm_resource_group" "k8s" {
+data "azurerm_resource_group" "k8s" {
   name     = "${var.name}-${var.environment}-vpc"
-  location =  var.location
 }
-
 
 resource "azurerm_template_deployment" "main" {
   name                = "${var.name}-${var.environment}-aks-ARM"
-  resource_group_name = azurerm_resource_group.k8s.name
+  resource_group_name = data.azurerm_resource_group.k8s.name
 
   template_body = file("${path.module}/arm/template.json")
 
@@ -14,7 +12,7 @@ resource "azurerm_template_deployment" "main" {
 
   parameters = {
     resourceName                 = "${var.name}-${var.environment}-k8s"
-    resourceGroup                = azurerm_resource_group.k8s.name
+    resourceGroup                = data.azurerm_resource_group.k8s.name
     location                     = var.location
     dnsPrefix                    = var.k8s_dns_prefix
     osDiskSizeGB                 = var.os_disk_size_gb

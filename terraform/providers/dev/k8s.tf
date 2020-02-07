@@ -48,7 +48,7 @@ module "k8s-arm" {
 
   client_id           = data.azurerm_key_vault_secret.k8s_client_id.value
   client_secret       = data.azurerm_key_vault_secret.k8s_client_secret.value
-  principal_object_id = "a5cf859f-9f5e-442c-a76b-4df43741986d"
+  principal_object_id = "73639624-35ba-4491-b0f7-dde03b2e9435"
   workspace_id        = "tobedone" # Need to fix this
 
   service_cidr       = "10.0.0.0/16"  # Need to decide these values for advanced networking
