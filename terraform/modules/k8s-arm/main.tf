@@ -30,6 +30,7 @@ resource "azurerm_template_deployment" "main" {
     vmssNodePool                 = var.vmss_node_pool
     principalId                  = var.principal_object_id
     vnetSubnetID                 = var.vnet_subnet_id
+    omsWorkspaceID               = var.workspace_id
     serviceCidr                  = var.service_cidr
     dnsServiceIP                 = var.dns_service_ip
     dockerBridgeCidr             = var.docker_bridge_cidr

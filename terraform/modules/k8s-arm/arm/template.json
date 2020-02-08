@@ -8,7 +8,7 @@
                 "description": "The name of the Managed Cluster resource."
             }
         },
-        "resourceGroup":{
+        "resourceGroup": {
             "type": "string",
             "metadata": {
                 "description": "The name of the  Cluster resourcegroup."
@@ -49,7 +49,7 @@
         },
         "maxAgentCount": {
             "type": "string",
-            "defaultValue": "10", 
+            "defaultValue": "10",
             "metadata": {
                 "description": "The number of max agent nodes for the cluster."
             }
@@ -107,12 +107,13 @@
                 "description": "Maximum number of pods that can run on a node."
             }
         },
-        "enableAutoScaling":{
+        "enableAutoScaling": {
             "type": "string",
             "allowedValues": [
                 "true",
                 "false"
-            ],"defaultValue": "true",
+            ],
+            "defaultValue": "true",
             "metadata": {
                 "description": "Boolean flag to turn on and off of AutoScaling."
             }
@@ -122,8 +123,9 @@
             "allowedValues": [
                 "true",
                 "false"
-            ],"defaultValue": "true",
-        "metadata": {
+            ],
+            "defaultValue": "true",
+            "metadata": {
                 "description": "Boolean flag to turn on and off of RBAC."
             }
         },
@@ -132,7 +134,8 @@
             "allowedValues": [
                 "true",
                 "false"
-            ],"defaultValue": "true",
+            ],
+            "defaultValue": "true",
             "metadata": {
                 "description": "Boolean flag to turn on and off of VM scale sets"
             }
@@ -142,7 +145,8 @@
             "allowedValues": [
                 "true",
                 "false"
-            ],"defaultValue": "true",
+            ],
+            "defaultValue": "true",
             "metadata": {
                 "description": "Boolean flag to turn on and off of VM scale sets"
             }
@@ -152,7 +156,8 @@
             "allowedValues": [
                 "true",
                 "false"
-            ],"defaultValue": "true",
+            ],
+            "defaultValue": "true",
             "metadata": {
                 "description": "Boolean flag to turn on and off of http application routing."
             }
@@ -162,17 +167,19 @@
             "allowedValues": [
                 "true",
                 "false"
-            ],"defaultValue": "true",
-               "metadata": {
+            ],
+            "defaultValue": "true",
+            "metadata": {
                 "description": "Boolean flag to turn on and off of omsagent addon."
             }
         },
-        "enablePrivateCluster":{
+        "enablePrivateCluster": {
             "type": "string",
             "allowedValues": [
                 "true",
                 "false"
-            ],"defaultValue": "true",
+            ],
+            "defaultValue": "true",
             "metadata": {
                 "description": "Boolean flag to turn on and off of Private Cluster feature."
             }
@@ -208,23 +215,41 @@
             }
         },
         "owner": {
-            "type" : "string",
-            "metadata":{
+            "type": "string",
+            "metadata": {
                 "description": "Name of the owner for tags"
             }
         },
-        "environment" : {
-            "type" : "string",
+        "environment": {
+            "type": "string",
             "metadata": {
                 "description": "Name of the environment for tags"
             }
-        } 
+        },
+        "omsWorkspaceID": {
+            "type": "string",
+            "metadata": {
+                "description": "Specify the resource id of the OMS workspace."
+            }
+        },
+        "omsSku": {
+            "type": "string",
+            "defaultValue": "standalone",
+            "allowedValues": [
+                "free",
+                "standalone",
+                "pernode"
+            ],
+            "metadata": {
+                "description": "Select the SKU for your workspace."
+            }
+        }
     },
     "variables": {
         "vnetName": "[split(parameters('vnetSubnetID'),'/')[8]]",
         "subnetName": "[split(parameters('vnetSubnetID'),'/')[10]]",
-        "vnetResourceGroup" : "[split(parameters('vnetSubnetID'),'/')[4]]",
-        "vnetResourceGroupId" : "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/',split(parameters('vnetSubnetID'),'/')[4])]"
+        "vnetResourceGroup": "[split(parameters('vnetSubnetID'),'/')[4]]",
+        "vnetResourceGroupId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/',split(parameters('vnetSubnetID'),'/')[4])]"
     },
     "resources": [
         {
@@ -254,8 +279,8 @@
                         "vnetSubnetID": "[parameters('vnetSubnetID')]"
                     }
                 ],
-                "apiServerAccessProfile":{
-                    "enablePrivateCluster":"[bool(parameters('enablePrivateCluster'))]"
+                "apiServerAccessProfile": {
+                    "enablePrivateCluster": "[bool(parameters('enablePrivateCluster'))]"
                 },
                 "servicePrincipalProfile": {
                     "ClientId": "[parameters('servicePrincipalClientId')]",
@@ -267,7 +292,7 @@
                     "serviceCidr": "[parameters('serviceCidr')]",
                     "dnsServiceIP": "[parameters('dnsServiceIP')]",
                     "dockerBridgeCidr": "[parameters('dockerBridgeCidr')]",
-                    "outboundType":  "userDefinedRouting"
+                    "outboundType": "userDefinedRouting"
                 },
                 "addonProfiles": {
                     "httpApplicationRouting": {
@@ -307,6 +332,71 @@
                     ]
                 }
             }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "SolutionDeployment",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[split(parameters('omsWorkspaceID'),'/')[4]]",
+            "subscriptionId": "[split(parameters('omsWorkspaceID'),'/')[2]]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "apiVersion": "2015-11-01-preview",
+                            "type": "Microsoft.OperationsManagement/solutions",
+                            "location": "[parameters('location')]",
+                            "name": "[concat('ContainerInsights', '(', split(parameters('omsWorkspaceID'),'/')[8], ')')]",
+                            "properties": {
+                                "workspaceResourceId": "[parameters('omsWorkspaceID')]"
+                            },
+                            "plan": {
+                                "name": "[concat('ContainerInsights', '(', split(parameters('omsWorkspaceID'),'/')[8], ')')]",
+                                "product": "[concat('OMSGallery/', 'ContainerInsights')]",
+                                "promotionCode": "",
+                                "publisher": "Microsoft"
+                            }
+                        }
+                    ]
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "ClusterMonitoringMetricPulisherRoleAssignmentDepl",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[parameters('resourceGroup')]",
+            "subscriptionId": "[subscription().subscriptionId]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "type": "Microsoft.ContainerService/managedClusters/providers/roleAssignments",
+                            "apiVersion": "2018-01-01-preview",
+                            "name": "[concat(parameters('resourceName'),'/Microsoft.Authorization/d965aa7e-bfe6-4158-a9fd-a7270c3af0c6')]",
+                            "properties": {
+                                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+                                "principalId": "[parameters('principalId')]",
+                                "scope": "[resourceId('Microsoft.ContainerService/managedClusters/', parameters('resourceName'))]"
+                            }
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.ContainerService/managedClusters/', parameters('resourceName'))]"
+            ]
         }
     ]
 }
