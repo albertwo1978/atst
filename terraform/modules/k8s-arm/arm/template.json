@@ -297,6 +297,12 @@
                 "addonProfiles": {
                     "httpApplicationRouting": {
                         "enabled": "[bool(parameters('enableHttpApplicationRouting'))]"
+                    },
+                    "omsagent": {
+                        "enabled": "[parameters('enableOmsAgent')]",
+                        "config": {
+                            "logAnalyticsWorkspaceResourceID": "[parameters('omsWorkspaceID')]"
+                        }
                     }
                 }
             },
