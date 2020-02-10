@@ -173,15 +173,10 @@
                 "description": "Boolean flag to turn on and off of omsagent addon."
             }
         },
-        "enablePrivateCluster": {
+        "apiServerAccessAuthorizedIPRanges": {
             "type": "string",
-            "allowedValues": [
-                "true",
-                "false"
-            ],
-            "defaultValue": "true",
             "metadata": {
-                "description": "Boolean flag to turn on and off of Private Cluster feature."
+                "description": "Comma separated string of Authorized IP ranges for API Server access."
             }
         },
         "principalId": {
@@ -280,7 +275,7 @@
                     }
                 ],
                 "apiServerAccessProfile": {
-                    "enablePrivateCluster": "[bool(parameters('enablePrivateCluster'))]"
+                    "authorizedIPRanges": "[split(parameters('apiServerAccessAuthorizedIPRanges'),',')]"
                 },
                 "servicePrincipalProfile": {
                     "ClientId": "[parameters('servicePrincipalClientId')]",
@@ -299,7 +294,7 @@
                         "enabled": "[bool(parameters('enableHttpApplicationRouting'))]"
                     },
                     "omsagent": {
-                        "enabled": "[parameters('enableOmsAgent')]",
+                        "enabled": "[bool(parameters('enableOmsAgent'))]",
                         "config": {
                             "logAnalyticsWorkspaceResourceID": "[parameters('omsWorkspaceID')]"
                         }

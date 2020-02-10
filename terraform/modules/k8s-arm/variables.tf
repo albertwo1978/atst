@@ -62,12 +62,10 @@ variable "enable_auto_scaling" {
   description = "Enable or disable autoscaling (Default: false)"
 }
 
-variable "enable_private_cluster" {
-  default     = false
-  type        = bool
-  description = "Enable or disable Private cluster (Default: false)"
+variable "api_server_access_ip_ranges" {
+  type        = string
+  description = "List of authorized IP ranges for the API Server Access profile for the cluster comma separated in a string."
 }
-
 
 variable "enable_rbac" {
   default     = true
