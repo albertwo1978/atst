@@ -5,7 +5,7 @@ module "keyvault" {
   owner            = var.owner
   environment      = var.environment
   tenant_id        = var.tenant_id
-  principal_id     = "aaa48c52-f855-48fe-86d0-856d12357581"
+  principal_id     = "02452eee-babc-4757-bbaf-0fd6db0588eb"
   admin_principals = var.admin_users
   policy           = "Deny"
   subnet_ids       = [module.vpc.subnets]

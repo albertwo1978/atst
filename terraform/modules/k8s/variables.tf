@@ -1,4 +1,4 @@
-variable "region" {
+variable "location" {
   type        = string
   description = "Region this module and resources will be created in"
 }

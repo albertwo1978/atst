@@ -1,13 +1,14 @@
 resource "azurerm_resource_group" "k8s" {
   name     = "${var.name}-${var.environment}-vpc"
-  location = var.region
+  location = var.location
 }
 
 resource "azurerm_kubernetes_cluster" "k8s" {
-  name                = "${var.name}-${var.environment}-k8s"
-  location            = azurerm_resource_group.k8s.location
-  resource_group_name = azurerm_resource_group.k8s.name
-  dns_prefix          = var.k8s_dns_prefix
+  name                  = "${var.name}-${var.environment}-k8s"
+  location              = azurerm_resource_group.k8s.location
+  resource_group_name   = azurerm_resource_group.k8s.name
+  dns_prefix            = var.k8s_dns_prefix
+  private_link_enabled  = true
 
   service_principal {
     client_id     = "c344ac0e-e09e-4f19-8257-a3fa3d737692"

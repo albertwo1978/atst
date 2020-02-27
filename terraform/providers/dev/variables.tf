@@ -1,9 +1,9 @@
 variable "environment" {
-  default = "e2e2"
+  default = "walker"
 }
 
 variable "region" {
-  default = "canadacentral"
+  default = "eastus"
 
 }
 
@@ -12,7 +12,7 @@ variable "backup_region" {
 }
 
 variable "owner" {
-  default = "e2e2"
+  default = "walker"
 }
 
 variable "name" {
