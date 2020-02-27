@@ -50,14 +50,14 @@ variable "routes" {
   description = "Routes for next hop types: VirtualNetworkGateway, VnetLocal, Internet or None"
   type        = map
   default = {
-    public1 = "public,firewall,52.139.8.215/32,Internet" 
-    public2 = "public,vnet,10.1.0.0/16,VnetLocal" 
-    private1 = "private,firewall,52.139.8.215/32,Internet" 
-    private2 = "private,vnet,10.1.0.0/16,VnetLocal" 
-    redis1 = "redis,firewall,52.139.8.215/32,Internet" 
-    redis2 = "redis,vnet,10.1.0.0/16,VnetLocal" 
-    apps1 = "apps,firewall,52.139.8.215/32,Internet" 
-    apps2 = "apps,vnet,10.1.0.0/16,VnetLocal" 
+    # public1 = "public,firewall,52.139.8.215/32,Internet" 
+    # public2 = "public,vnet,10.1.0.0/16,VnetLocal" 
+    # private1 = "private,firewall,52.139.8.215/32,Internet" 
+    # private2 = "private,vnet,10.1.0.0/16,VnetLocal" 
+    # redis1 = "redis,firewall,52.139.8.215/32,Internet" 
+    # redis2 = "redis,vnet,10.1.0.0/16,VnetLocal" 
+    # apps1 = "apps,firewall,52.139.8.215/32,Internet" 
+    # apps2 = "apps,vnet,10.1.0.0/16,VnetLocal" 
   }
 }
 
@@ -65,10 +65,10 @@ variable "virtual_appliance_routes" {
   description = "Routes for next hop types VirtualAppliance"
   type        = map
   default = {
-    public1 = "public,default,0.0.0.0/0,VirtualAppliance,10.0.1.4"
-    private1 = "private,default,0.0.0.0/0,VirtualAppliance,10.0.1.4"
-    redis1 = "redis,default,0.0.0.0/0,VirtualAppliance,10.0.1.4"
-    app1 = "apps,default,0.0.0.0/0,VirtualAppliance,10.0.1.4"
+    # public1 = "public,default,0.0.0.0/0,VirtualAppliance,10.0.1.4"
+    # private1 = "private,default,0.0.0.0/0,VirtualAppliance,10.0.1.4"
+    # redis1 = "redis,default,0.0.0.0/0,VirtualAppliance,10.0.1.4"
+    # app1 = "apps,default,0.0.0.0/0,VirtualAppliance,10.0.1.4"
   }
 }
 
