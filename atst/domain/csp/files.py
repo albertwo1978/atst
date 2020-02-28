@@ -38,7 +38,7 @@ class AzureFileService(FileService):
     def __init__(self, config):
         self.account_name = config["AZURE_ACCOUNT_NAME"]
         self.storage_key = config["AZURE_STORAGE_KEY"]
-        self.container_name = config["AZURE_TO_BUCKET_NAME"]
+        self.container_name = config["AZURE_TO_STORAGE_NAME"]
         self.timeout = timedelta(seconds=config["PERMANENT_SESSION_LIFETIME"])
 
         from azure.storage.common import CloudStorageAccount

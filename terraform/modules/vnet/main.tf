@@ -1,5 +1,5 @@
-resource "azurerm_resource_group" "vpc" {
-  name     = "${var.name}-${var.environment}-vpc"
+resource "azurerm_resource_group" "vnet" {
+  name     = "${var.name}-${var.environment}-vnet"
   location = var.region
 
   tags = {
@@ -8,17 +8,17 @@ resource "azurerm_resource_group" "vpc" {
   }
 }
 
-resource "azurerm_network_ddos_protection_plan" "vpc" {
+resource "azurerm_network_ddos_protection_plan" "vnet" {
   count               = var.ddos_enabled
   name                = "${var.name}-${var.environment}-ddos"
-  location            = azurerm_resource_group.vpc.location
-  resource_group_name = azurerm_resource_group.vpc.name
+  location            = azurerm_resource_group.vnet.location
+  resource_group_name = azurerm_resource_group.vnet.name
 }
 
-resource "azurerm_virtual_network" "vpc" {
+resource "azurerm_virtual_network" "vnet" {
   name                = "${var.name}-${var.environment}-network"
-  location            = azurerm_resource_group.vpc.location
-  resource_group_name = azurerm_resource_group.vpc.name
+  location            = azurerm_resource_group.vnet.location
+  resource_group_name = azurerm_resource_group.vnet.name
   address_space       = ["${var.virtual_network}"]
   dns_servers         = var.dns_servers
 
@@ -31,8 +31,8 @@ resource "azurerm_virtual_network" "vpc" {
 resource "azurerm_subnet" "subnet" {
   for_each             = var.networks
   name                 = "${var.name}-${var.environment}-${each.key}"
-  resource_group_name  = azurerm_resource_group.vpc.name
-  virtual_network_name = azurerm_virtual_network.vpc.name
+  resource_group_name  = azurerm_resource_group.vnet.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefix       = element(split(",", each.value), 0)
 
   # See https://github.com/terraform-providers/terraform-provider-azurerm/issues/3471
@@ -54,8 +54,8 @@ resource "azurerm_subnet" "subnet" {
 resource "azurerm_route_table" "route_table" {
   for_each            = var.networks
   name                = "${var.name}-${var.environment}-${each.key}"
-  location            = azurerm_resource_group.vpc.location
-  resource_group_name = azurerm_resource_group.vpc.name
+  location            = azurerm_resource_group.vnet.location
+  resource_group_name = azurerm_resource_group.vnet.name
 }
 
 resource "azurerm_subnet_route_table_association" "route_table" {
@@ -67,7 +67,7 @@ resource "azurerm_subnet_route_table_association" "route_table" {
 resource "azurerm_route" "route" {
  for_each            = var.routes
   name                = "${var.name}-${var.environment}-${element(split(",", each.value), 1)}"
-  resource_group_name = azurerm_resource_group.vpc.name
+  resource_group_name = azurerm_resource_group.vnet.name
   route_table_name    = "${var.name}-${var.environment}-${element(split(",", each.value), 0)}"
 #  route_table_name    = azurerm_route_table.route_table[each.key].name
   address_prefix      = element(split(",", each.value), 2)
@@ -77,7 +77,7 @@ resource "azurerm_route" "route" {
 resource "azurerm_route" "virtual_appliance_route" {
  for_each            = var.virtual_appliance_routes
   name                = "${var.name}-${var.environment}-${element(split(",", each.value), 1)}"
-  resource_group_name = azurerm_resource_group.vpc.name
+  resource_group_name = azurerm_resource_group.vnet.name
   route_table_name    = "${var.name}-${var.environment}-${element(split(",", each.value), 0)}"
 #  route_table_name    = azurerm_route_table.route_table[each.key].name
   address_prefix      = element(split(",", each.value), 2)

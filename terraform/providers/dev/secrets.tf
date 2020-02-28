@@ -8,7 +8,7 @@ module "operator_keyvault" {
   principal_id     = ""
   admin_principals = var.admin_users
   policy           = "Deny"
-  subnet_ids       = [module.vpc.subnets]
+  subnet_ids       = [module.vnet.subnets]
   whitelist        = var.admin_user_whitelist
   workspace_id     = module.logs.workspace_id
 }

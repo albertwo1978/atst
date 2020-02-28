@@ -1,5 +1,5 @@
-module "vpc" {
-  source                    = "../../modules/vpc/"
+module "vnet" {
+  source                    = "../../modules/vnet/"
   environment               = var.environment
   region                    = var.region
   virtual_network           = var.virtual_network

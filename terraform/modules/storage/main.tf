@@ -1,19 +1,19 @@
-resource "azurerm_resource_group" "bucket" {
+resource "azurerm_resource_group" "storage" {
   name     = "${var.name}-${var.environment}-${var.service_name}"
   location = var.region
 }
 
-resource "azurerm_storage_account" "bucket" {
+resource "azurerm_storage_account" "storage" {
   name                     = var.service_name
-  resource_group_name      = azurerm_resource_group.bucket.name
-  location                 = azurerm_resource_group.bucket.location
+  resource_group_name      = azurerm_resource_group.storage.name
+  location                 = azurerm_resource_group.storage.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
 
 resource "azurerm_storage_account_network_rules" "acls" {
-  resource_group_name  = azurerm_resource_group.bucket.name
-  storage_account_name = azurerm_storage_account.bucket.name
+  resource_group_name  = azurerm_resource_group.storage.name
+  storage_account_name = azurerm_storage_account.storage.name
 
   default_action = var.policy
 
@@ -25,9 +25,9 @@ resource "azurerm_storage_account_network_rules" "acls" {
   bypass                     = ["AzureServices"]
 }
 
-resource "azurerm_storage_container" "bucket" {
+resource "azurerm_storage_container" "storage" {
   name                  = "content"
-  storage_account_name  = azurerm_storage_account.bucket.name
+  storage_account_name  = azurerm_storage_account.storage.name
   container_access_type = var.container_access_type
 }
 
@@ -35,6 +35,6 @@ resource "azurerm_storage_container" "bucket" {
 # storage_account resource
 resource "null_resource" "retention" {
   provisioner "local-exec" {
-    command = "az storage logging update --account-name ${azurerm_storage_account.bucket.name} --log rwd --services bqt --retention 90"
+    command = "az storage logging update --account-name ${azurerm_storage_account.storage.name} --log rwd --services bqt --retention 90"
   }
 }

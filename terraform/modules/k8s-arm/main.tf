@@ -1,5 +1,5 @@
 resource  "azurerm_resource_group" "k8s" {
-  name = "${var.name}-${var.environment}-vpc"
+  name = "${var.name}-${var.environment}-vnet"
   location = var.location
 }
 

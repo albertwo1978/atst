@@ -6,7 +6,7 @@ metadata:
   namespace: atat
 data:
   AZURE_ACCOUNT_NAME: atat
-  AZURE_TO_BUCKET_NAME: task-order-pdfs
+  AZURE_TO_STORAGE_NAME: task-order-pdfs
   CAC_URL: https://auth-staging.atat.code.mil/login-redirect
   CELERY_DEFAULT_QUEUE: celery-master
   DEBUG: "0"

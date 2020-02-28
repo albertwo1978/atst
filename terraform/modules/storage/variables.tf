@@ -26,7 +26,7 @@ variable "container_access_type" {
 }
 
 variable "service_name" {
-  description = "Name of the service using this bucket"
+  description = "Name of the service using this storage account"
   type        = string
 }
 

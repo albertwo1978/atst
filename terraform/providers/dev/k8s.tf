@@ -17,8 +17,8 @@ module "k8s" {
   k8s_dns_prefix      = var.k8s_dns_prefix
   k8s_node_size       = var.k8s_node_size
   k8s_network_plugin  = var.k8s_network_plugin
-  vnet_id             = module.vpc.id 
-  vnet_subnet_id      = module.vpc.subnets #FIXME - output from module.vpc.subnets should be map
+  vnet_id             = module.vnet.id 
+  vnet_subnet_id      = module.vnet.subnets #FIXME - output from module.vnet.subnets should be map
   enable_auto_scaling = true
   max_count           = 5
   min_count           = 3
@@ -39,7 +39,7 @@ module "k8s" {
 #   k8s_dns_prefix         = var.k8s_dns_prefix
 #   k8s_node_size          = var.k8s_node_size
 #   k8s_network_plugin     = var.k8s_network_plugin
-#   vnet_subnet_id         = module.vpc.subnets #FIXME - output from module.vpc.subnets should be map
+#   vnet_subnet_id         = module.vnet.subnets #FIXME - output from module.vnet.subnets should be map
 #   enable_auto_scaling    = true
 #   enable_private_cluster = true
 #   enable_rbac            = true

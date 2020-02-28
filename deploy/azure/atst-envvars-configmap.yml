@@ -7,7 +7,7 @@ metadata:
 data:
   ASSETS_URL: https://atat-cdn.azureedge.net/
   AZURE_ACCOUNT_NAME: atat
-  AZURE_TO_BUCKET_NAME: task-order-pdfs
+  AZURE_TO_STORAGE_NAME: task-order-pdfs
   BLOB_STORAGE_URL: https://atat.blob.core.windows.net/
   CAC_URL: https://auth-staging.atat.code.mil/login-redirect
   CDN_ORIGIN: https://azure.atat.code.mil

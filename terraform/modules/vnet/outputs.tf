@@ -9,5 +9,5 @@ output "subnet_list" {
 }
 
 output "id" {
-  value = azurerm_virtual_network.vpc.id
+  value = azurerm_virtual_network.vnet.id
 }

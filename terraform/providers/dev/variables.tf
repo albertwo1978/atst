@@ -16,7 +16,7 @@ variable "owner" {
 }
 
 variable "name" {
-  default = "staging"
+  default = "east"
 }
 
 variable "virtual_network" {
@@ -94,18 +94,18 @@ variable "k8s_zones" {
 
 variable "k8s_dns_prefix" {
   type    = string
-  default = "atat"
+  default = "walker"
 }
 
 variable "tenant_id" {
   type    = string
-  default = "72f988bf-86f1-41af-91ab-2d7cd011db47"
+  default = "802690d9-449e-4e9d-b89b-a2519fb4e743"
 }
 
 variable "admin_users" {
   type = map
   default = {
-    "Albert Wolchesky"      = "ec452237-8913-48c1-8b7d-ed60599eef32"
+    "Albert Wolchesky"      = "bdf1178b-4518-4015-ac70-94eb7a5ebdd4"
   }
 }
 

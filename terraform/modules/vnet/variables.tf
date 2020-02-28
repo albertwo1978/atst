@@ -22,7 +22,7 @@ variable "ddos_enabled" {
 }
 
 variable "virtual_network" {
-  description = "The supernet used for this VPC a.k.a Virtual Network"
+  description = "The supernet used for this Virtual Network"
   type        = string
 }
 

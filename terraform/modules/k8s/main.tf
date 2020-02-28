@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "k8s" {
-  name     = "${var.name}-${var.environment}-vpc"
+  name     = "${var.name}-${var.environment}-vnet"
   location = var.location
 }
 
@@ -11,8 +11,8 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   private_link_enabled  = true
 
   service_principal {
-    client_id     = "c344ac0e-e09e-4f19-8257-a3fa3d737692"
-    client_secret = "262a8fcc-07d6-4929-8c74-b2df467464c8"
+    client_id     = "45acd499-e6e2-429b-9db5-e86582a3a8d3"
+    client_secret = "988508ec-857e-4068-98b4-b985238bcaa5"
   }
 
   default_node_pool {

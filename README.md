@@ -172,7 +172,7 @@ CSP=< azure | mock>
 
 AZURE_STORAGE_KEY=""
 AZURE_ACCOUNT_NAME=""
-AZURE_TO_BUCKET_NAME=""
+AZURE_TO_STORAGE_NAME=""
 ```
 
 There are also some build-time configuration that are used by parcel. Add these to `.env.local`, and run `rm -r .cache/` before running `yarn build`:
@@ -220,7 +220,7 @@ To generate coverage reports for the Javascript tests:
 - `ASSETS_URL`: URL to host which serves static assets (such as a CDN).
 - `AZURE_ACCOUNT_NAME`: The name for the Azure blob storage account
 - `AZURE_STORAGE_KEY`: A valid secret key for the Azure blob storage account
-- `AZURE_TO_BUCKET_NAME`: The Azure blob storage container name for task order uploads
+- `AZURE_TO_STORAGE_NAME`: The Azure blob storage container name for task order uploads
 - `BLOB_STORAGE_URL`: URL to Azure blob storage container.
 - `CAC_URL`: URL for the CAC authentication route.
 - `CA_CHAIN`: Path to the CA chain file.

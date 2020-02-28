@@ -6,7 +6,7 @@ module "container_registry" {
   owner         = var.owner
   backup_region = var.backup_region
   policy        = "Deny"
-  subnet_ids    = [module.vpc.subnet_list["private"].id]
+  subnet_ids    = [module.vnet.subnet_list["private"].id]
   whitelist     = var.admin_user_whitelist
   workspace_id  = module.logs.workspace_id
 }

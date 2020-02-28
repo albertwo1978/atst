@@ -155,7 +155,7 @@ You'll see output similar to the following if it was successful
 ## Setting the Azure Storage Key
 Azure storage is very similar to how Redis has a generated key. This generated key is what is used at the time of writing this doc.
 
-Grab the key from the "Access Keys" tab on the cloud storage bucket
+Grab the key from the "Access Keys" tab on the cloud storage account
 
 ![Cloud Storage Keys](images/azure-storage.png)
 
@@ -184,7 +184,7 @@ terraform destroy
 Sometimes you're writing a new module and don't want to make changes to anything else. In this case you can limit what TF changes.
 
 ```
-terraform plan -target=module.vpc
+terraform plan -target=module.vnet
 ```
 
 In the above example, this will only run a plan (plan/apply/destroy) on the specific module. This can be a module, or resource. You can get a list of module and resources by running `terraform show`.
@@ -215,7 +215,7 @@ Copy paste (mostly)
 *Register Preview features*
 See [Registering Features](#Preview_Features)
 
-*Edit provider.tf and turn off remote bucket temporarily (comment out backend {} section)*
+*Edit provider.tf and turn off remote storage account temporarily (comment out backend {} section)*
 ```
 provider "azurerm" {
   version = "=1.40.0"
@@ -240,14 +240,14 @@ terraform {
 
 `terraform plan -target=module.tf_state`
 
-Ensure the state bucket is created.
+Ensure the state storage account is created.
 
 *create the container in the portal (or cli).*
-This simply involves going to the bucket in the azure portal and creating the container.
+This simply involves going to the storage account in the azure portal and creating the container.
 
-Now is the tricky part. For this, we will be switching from local state (files) to remote state (stored in the azure bucket)
+Now is the tricky part. For this, we will be switching from local state (files) to remote state (stored in the azure storage account )
 
-Uncomment the `backend {}` section in the `provider.tf` file. Once uncommented, we will re-run the init. This will attempt to copy the local state to the remote bucket.
+Uncomment the `backend {}` section in the `provider.tf` file. Once uncommented, we will re-run the init. This will attempt to copy the local state to the remote storage account.
 
 `terraform init`
 
