@@ -97,6 +97,21 @@ variable "k8s_dns_prefix" {
   default = "walker"
 }
 
+variable "k8s_client_app_id" {
+  type    = string
+  default = "8e16a898-b96e-4bca-9a15-a67feb3753aa"
+}
+
+variable "k8s_server_app_id" {
+  type    = string
+  default = "cd2b0e95-27ba-4777-bf42-dcfd957d0d95"
+}
+
+variable "k8s_server_app_secret" {
+  type    = string
+  default = "f4d9c108-fb2f-419a-b2bf-45e8cde40bf0"
+}
+
 variable "tenant_id" {
   type    = string
   default = "802690d9-449e-4e9d-b89b-a2519fb4e743"

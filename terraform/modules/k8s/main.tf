@@ -33,6 +33,12 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   }
 
   role_based_access_control {
+    azure_active_directory {
+      client_app_id     = var.k8s_client_app_id
+      server_app_id     = var.k8s_server_app_id
+      server_app_secret = var.k8s_server_app_secret
+      tenant_id         = var.tenant_id
+    }
     enabled = true
   }
 

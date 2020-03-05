@@ -9,24 +9,28 @@ data "azurerm_key_vault_secret" "k8s_client_secret" {
 }
 
 module "k8s" {
-  source              = "../../modules/k8s"
-  location            = var.region
-  name                = var.name
-  environment         = var.environment
-  owner               = var.owner
-  k8s_dns_prefix      = var.k8s_dns_prefix
-  k8s_node_size       = var.k8s_node_size
-  k8s_network_plugin  = var.k8s_network_plugin
-  vnet_id             = module.vnet.id 
-  vnet_subnet_id      = module.vnet.subnets #FIXME - output from module.vnet.subnets should be map
-  enable_auto_scaling = true
-  max_count           = 5
-  min_count           = 3
-#  node_count               = 3
-  client_id           = data.azurerm_key_vault_secret.k8s_client_id.value
-  client_secret       = data.azurerm_key_vault_secret.k8s_client_secret.value
-#  principal_object_id = "73639624-35ba-4491-b0f7-dde03b2e9435"  
-  workspace_id        = module.logs.workspace_id
+  source                = "../../modules/k8s"
+  location              = var.region
+  name                  = var.name
+  environment           = var.environment
+  owner                 = var.owner
+  k8s_dns_prefix        = var.k8s_dns_prefix
+  k8s_node_size         = var.k8s_node_size
+  k8s_network_plugin    = var.k8s_network_plugin
+  vnet_id               = module.vnet.id 
+  vnet_subnet_id        = module.vnet.subnets #FIXME - output from module.vnet.subnets should be map
+  enable_auto_scaling   = true
+  max_count             = 5
+  min_count             = 3
+#  node_count            = 3
+  k8s_client_app_id     = var.k8s_client_app_id
+  k8s_server_app_id     = var.k8s_server_app_id
+  k8s_server_app_secret = var.k8s_server_app_secret
+  tenant_id             = var.tenant_id
+  client_id             = data.azurerm_key_vault_secret.k8s_client_id.value
+  client_secret         = data.azurerm_key_vault_secret.k8s_client_secret.value
+#  principal_object_id   = "73639624-35ba-4491-b0f7-dde03b2e9435"  
+  workspace_id          = module.logs.workspace_id
 }
 
 

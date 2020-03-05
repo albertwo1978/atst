@@ -64,6 +64,26 @@ variable "min_count" {
   description = "Minimum number of nodes to use in autoscaling. This requires `enable_auto_scaling` to be set to true"
 }
 
+variable "k8s_client_app_id" {
+  type        = string
+  description = "The client appplication ID for k8s RBAC AAD integration"
+}
+
+variable "k8s_server_app_id" {
+  type        = string
+  description = "The server appplication ID for k8s RBAC AAD integration"
+}
+
+variable "k8s_server_app_secret" {
+  type        = string
+  description = "The server appplication secret for k8s RBAC AAD integration."
+}
+
+variable "tenant_id" {
+  type        = string
+  description = "The tenant ID for k8s RBAC AAD integration"
+}
+
 variable "client_id" {
   type        = string
   description = "The client ID for the Service Principal associated with the AKS cluster."
