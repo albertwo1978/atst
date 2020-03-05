@@ -99,46 +99,46 @@ variable "k8s_dns_prefix" {
 
 variable "k8s_client_app_id" {
   type    = string
-  default = "8e16a898-b96e-4bca-9a15-a67feb3753aa"
+  default = ""
 }
 
 variable "k8s_server_app_id" {
   type    = string
-  default = "cd2b0e95-27ba-4777-bf42-dcfd957d0d95"
+  default = ""
 }
 
 variable "k8s_server_app_secret" {
   type    = string
-  default = "f4d9c108-fb2f-419a-b2bf-45e8cde40bf0"
+  default = ""
 }
 
 variable "tenant_id" {
   type    = string
-  default = "802690d9-449e-4e9d-b89b-a2519fb4e743"
+  default = ""
 }
 
 variable "admin_users" {
   type = map
   default = {
-    "Albert Wolchesky"      = "bdf1178b-4518-4015-ac70-94eb7a5ebdd4"
+    "Albert Wolchesky"      = ""
   }
 }
 
 variable "admin_user_whitelist" {
   type = map
   default = {
-    "Albert Wolchesky"           = "75.27.237.179/32"
+    "Albert Wolchesky"           = ""
   }
 }
 
 variable "storage_admin_whitelist" {
   type = map
   default = {
-    "Albert Wolchesky"           = "75.27.237.179"
+    "Albert Wolchesky"           = ""
   }
 }
 
 variable "vpn_client_cidr" {
   type    = list
-  default = ["172.16.255.0/24"]
+  default = [""]
 }

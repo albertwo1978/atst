@@ -11,8 +11,8 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   private_link_enabled  = true
 
   service_principal {
-    client_id     = "45acd499-e6e2-429b-9db5-e86582a3a8d3"
-    client_secret = "988508ec-857e-4068-98b4-b985238bcaa5"
+    client_id     = ""
+    client_secret = ""
   }
 
   default_node_pool {
@@ -103,6 +103,6 @@ resource "azurerm_monitor_diagnostic_setting" "k8s_diagnostic-1" {
 resource "azurerm_role_assignment" "k8s_network_contrib" {
   scope                             = var.vnet_id
   role_definition_name              = "Network Contributor"
-  principal_id                      = "c344ac0e-e09e-4f19-8257-a3fa3d737692"
+  principal_id                      = ""
   skip_service_principal_aad_check  = true
 }
